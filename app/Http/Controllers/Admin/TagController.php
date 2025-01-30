@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
@@ -31,50 +32,58 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'name' => 'required',
-            'slug' => 'required',
-        ]);
+        $request->validate(
+            [
+            'name' => 'required|unique:tags,name|max:255',
+            ],
+            [
+                'name.required' => 'Please enter Tag data',
+                'name.unique' => 'The Tag you entered already exists'
+            ]
+
+    );
 
         $tag = new Tag();
         $tag->name = $request->name;
-        $tag->slug = $request->slug;
+        $tag->slug = Str::slug($request->name);
 
         $tag->save();
         return redirect()->route('tag.index')
             ->with('success', 'data berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Tag $tag)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function edit($slug)
     {
-        $tag = Tag::FindOrFail($id);
+        $tag = Tag::FindOrFail('slug', $slug);
         return view('admin.tag.edit', compact('tag'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Tag $tag)
+    public function update(Request $request, $slug)
     {
-        //
+        $validate = $request->validate([
+            'name' => 'required|unique:tags,name,' . $slug . ',slug',
+        ]);
+
+        $tag = Tag::FindOrFail('slug', $slug);
+        $tag->name = $request->name;
+        $tag->slug = Str::slug($request->name);
+
+        $tag->save();
+        return redirect()->route('tag.index')
+            ->with('success', 'data berhasil di edit');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Tag $tag)
+    public function destroy($slug)
     {
-        //
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+        $tag->delete();
+
+        return redirect()->route('tag.index')
+            ->with('success', 'data berhasil dihapus');
     }
 }

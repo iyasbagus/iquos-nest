@@ -10,6 +10,6 @@ class Tag extends Model
     use HasFactory;
 
     public $fillable = ['name','slug'];
-    public $visible = ['name','slug'];
+   
     public $timestamp = true;
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('thumbnail_url');
             $table->unsignedBigInteger('creator_id');
             $table->boolean('is_premium_only');
-            $table->integer('dowloads');
+            $table->integer('downloads');
             $table->decimal('rating', total:1, places:1);
             $table->enum('status', ['active', 'pending', 'rejected']);
             // $table->dateTime('created_at');

@@ -51,7 +51,7 @@
                             team to collaborate on this project.
                         </p>
 
-                        <form class="mt-4" action="{{ route('category.update', $category->id) }}" method="POST"
+                        <form class="mt-4" action="{{ route('category.update', $category->slug) }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -62,15 +62,6 @@
                             <label class="form-label block mt-3">
                                 <input type="text" name="name" id="name" placeholder="Input Category Name" value="{{$category->name}}"
                                     class="form-control block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                            </label>
-
-                            <label for="slug" class="text-sm text-gray-700 dark:text-gray-200">
-                                Slug Name
-                            </label>
-
-                            <label class="block mt-3">
-                                <input type="text" name="slug" id="slug" placeholder="Input Slug Name" value="{{$category->slug}}"
-                                    class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
                             </label>
 
                             <label for="description" class="text-sm text-gray-700 dark:text-gray-200">
