@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('thumbnail_url');
             $table->unsignedBigInteger('creator_id');
             $table->boolean('is_premium_only');
-            $table->integer('downloads');
-            $table->decimal('rating', total:1, places:1);
-            $table->enum('status', ['active', 'pending', 'rejected']);
+            $table->integer('downloads')->nullable();
+            $table->decimal('rating', total:1, places:1)->nullable();
+            $table->enum('status', ['active', 'pending', 'rejected'])->nullable();
             // $table->dateTime('created_at');
             // $table->dateTime('updated_at');
             $table->timestamps();

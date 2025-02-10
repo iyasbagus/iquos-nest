@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
@@ -109,6 +110,16 @@ class CategoryController extends Controller
     public function destroy($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
+
+        if(!$category) {
+            return redirect()->back()->with('error', 'Category Not Found');
+        }
+
+        $file_path = public_path('admin/images/category/' . $category->images);
+        if (File::exists($file_path)) {
+            File::delete($file_path);
+        }
+
         $category->delete();
 
         return redirect()->route('category.index')

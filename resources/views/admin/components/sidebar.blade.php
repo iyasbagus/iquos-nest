@@ -39,7 +39,7 @@
                         <button
                             class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"">
                             <i class="material-icons-outlined">table_chart</i>
-                            <span class="mx-2 text-sm font-medium">Tables</span>
+                            <span class="mx-2 text-sm font-medium">Table Data</span>
 
 
                             <div class="ms-1 ml-24">
@@ -59,6 +59,9 @@
                         </x-dropdown-link>
                         <x-dropdown-link :href="route('tag.index')">
                             {{ __('Tag') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('adminAsset.index')">
+                            {{ __('Asset') }}
                         </x-dropdown-link>
                     </x-slot>
 

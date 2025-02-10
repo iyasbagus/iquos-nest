@@ -105,7 +105,7 @@
                                             <form action="{{route('tag.destroy', $item->slug)}}" method="POST">
                                             @method('DELETE')
                                             @csrf
-                                            <button class="text-red-500">&times;</button>
+                                            <button class="text-blue-500">&times;</button>
                                             </form>
                                         </span>
                                     @endforeach
@@ -122,7 +122,7 @@
                                     class="w-full p-2 border rounded mb-2" />
                                 <div class="flex gap-2 mt-3">
                                     <button type="submit"
-                                        class="px-3 py-1 bg-gray-800 text-white rounded">Submit</button>
+                                        class="px-3 py-1 bg-blue-500 text-white rounded">Submit</button>
                                     <button type="reset" class="px-3 py-1 bg-white border rounded">Reset</button>
                                 </div>
                             </form>

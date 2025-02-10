@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Asset;
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -49,6 +51,6 @@ class User extends Authenticatable
 
     public function asset()
     {
-        return $this->hasMany(Asset::class);
+        return $this->hasMany(Asset::class, 'creator_id');
     }
 }
