@@ -8,12 +8,11 @@
                             <h2 class="text-lg font-medium text-gray-800 dark:text-white">Assets</h2>
 
                             <span
-                                class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">100
+                                class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full dark:bg-gray-800 dark:text-blue-400">{{$assetTotal}}
                                 vendors</span>
                         </div>
 
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">These companies have purchased in
-                            the last 12 months.</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">This is the existing asset data.</p>
                     </div>
                 </div>
 
@@ -33,6 +32,7 @@
                             class="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
                     </div>
                 </div>
+
 
                 <div class="flex flex-col mt-6">
                     <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -130,7 +130,7 @@
                                                     </div>
                                                 </td>
 
-                                                <td class="absolute px-10 py-4 text-sm font-medium whitespace-nowrap">
+                                                <td class="absolute px-10 py-2 text-sm font-medium whitespace-nowrap">
                                                     <div x-data="{ isOpen: false }" class="relative inline-block ">
                                                         <!-- Dropdown toggle button -->
                                                         <button @click="isOpen = !isOpen"
@@ -179,6 +179,16 @@
 
                                                                     <span class="mx-1">
                                                                         Show Data
+                                                                    </span>
+                                                                </a>
+
+                                                                <a href="{{route('adminAsset.edit', $item->id)}}"
+                                                                    class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+
+                                                                    <i class="material-icons-outlined">edit</i>
+
+                                                                    <span class="mx-1">
+                                                                        Edit data
                                                                     </span>
                                                                 </a>
 

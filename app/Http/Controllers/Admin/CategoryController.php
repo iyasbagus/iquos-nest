@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+
 use App\Models\Category;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
@@ -14,7 +16,9 @@ class CategoryController extends Controller
     {
         $category = Category::all();
 
-        return view('admin.category.index', compact('category'));
+        $categoryTotal = Category::count();
+
+        return view('admin.category.index', compact('category', 'categoryTotal'));
     }
 
 
@@ -27,7 +31,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
          $validated = $request->validate([
-            'name' => 'required|unique:categories,name|max:255',
+            'name' => 'required|string|unique:categories,name|max:255',
             'description' => 'required',
             'images' => 'required|image|mimes:jpg,jpeg,png,gif'
         ]);
@@ -51,11 +55,11 @@ class CategoryController extends Controller
     }
 
 
-    public function show($slug)
-    {
-        $category = Category::where('slug', $slug)->firstOrFail();
-        return view('admin.category.show', compact('category'));
-    }
+    // public function show($slug)
+    // {
+    //     $category = Category::where('slug', $slug)->firstOrFail();
+    //     return view('admin.category.show', compact('category'));
+    // }
 
 
     public function edit($slug)

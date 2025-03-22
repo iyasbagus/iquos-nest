@@ -1,6 +1,6 @@
 <x-app-layout>
     <!-- Page Content -->
-    <main>
+    <main x-data="categoryModal()">
         <div class="px-1 mt-5">
             @if ($errors->has('name'))
                 <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
@@ -63,12 +63,11 @@
                             <h2 class="text-lg font-medium text-gray-800 dark:text-white">Category</h2>
 
                             <span
-                                class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">100
-                                vendors</span>
+                                class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full dark:bg-gray-800 dark:text-blue-400">{{$categoryTotal}}
+                                data</span>
                         </div>
 
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">These companies have purchased in
-                            the last 12 months.</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">This is the available category data.</p>
                     </div>
                 </div>
 
@@ -224,7 +223,7 @@
                 </div>
             </section>
         </div>
-    </main>
+
 
     {{-- Modal Add Data --}}
     <div x-show="addModal" x-transition:enter="transition duration-300 ease-out" x-cloak
@@ -355,7 +354,7 @@
                     <label for="name" class="form-label text-sm text-gray-700 dark:text-gray-200">
                         Category Name
                     </label>
-
+                    
                     <label class="form-label block mt-3">
                         <input type="text" name="name" id="name" placeholder="Input Category Name"
                             x-model="category.name"
@@ -424,30 +423,9 @@
                     this.editModal = false;
                     this.category = {};
                 },
-                // async updateCategory() {
-                //     try {
-                //         // Kirim data dengan Fetch API atau Axios
-                //         const response = await fetch(`/categories/${this.category.id}`, {
-                //             method: 'PUT',
-                //             headers: {
-                //                 'Content-Type': 'application/json',
-                //                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                //             },
-                //             body: JSON.stringify(this.category),
-                //         });
-
-                //         if (response.ok) {
-                //             alert('Category updated successfully!');
-                //             location.reload(); // Refresh halaman
-                //         } else {
-                //             alert('Failed to update category.');
-                //         }
-                //     } catch (error) {
-                //         console.error(error);
-                //         alert('An error occurred.');
-                //     }
-                // },
             };
         }
     </script>
+
+    </main>
 </x-app-layout>

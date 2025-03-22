@@ -14,13 +14,11 @@ return new class extends Migration
         Schema::create('creator_payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('creator_id');
-            $table->integer('total_dowloads');
-            $table->decimal('amount', total: 15, places: 2);
-            $table->enum('payment_method', ['Dana', 'Gopay']);
+            $table->integer('downloads_count');
+            $table->decimal('subscription_revenue', total: 10, places: 2);
+            $table->decimal('revenue_share_percentage', total: 5, places: 2);
+            $table->decimal('amount', total: 10, places: 2);
             $table->enum('payment_status', ['Pending', 'Paid']);
-            $table->dateTime('period_start');
-            $table->dateTime('period_end');
-            $table->dateTime('payment_date');
             $table->timestamps();
 
             //ini foreign key wak

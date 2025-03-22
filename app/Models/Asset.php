@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Tag;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +27,12 @@ class Asset extends Model
         public function category()
         {
             return $this->belongsToMany(Category::class, 'asset_categories', 'asset_id', 'category_id');
+        }
+
+    // Relasi many-to-many ke categories
+        public function tags()
+        {
+            return $this->belongsToMany(Tag::class, 'asset_tags', 'asset_id', 'tag_id');
         }
 
     // relasi one to may ke creator

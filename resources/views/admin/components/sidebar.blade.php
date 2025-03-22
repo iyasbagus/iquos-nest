@@ -1,9 +1,9 @@
 <aside
     class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
-    <a class="flex" href="#">
-        <img class="w-auto h-7" src="https://merakiui.com/images/logo.svg" alt="">
+    <a class="flex" href="{{url('')}}">
+        <img class="w-auto h-9" src="{{asset('images/iquosnest-logo.png')}}" alt="">
 
-        <span class="ml-4 mt-1">IQUOS Nest</span>
+        <span class="ml-4 mt-1 font-extrabold">IQUOS Nest</span>
     </a>
 
     <div class="flex flex-col justify-between flex-1 mt-6">
@@ -66,6 +66,20 @@
                     </x-slot>
 
                 </x-dropdown>
+
+                <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
+                    href="{{route('user.index')}}">
+                    <i class="material-icons-outlined">manage_accounts</i>
+
+                    <span class="mx-2 text-sm font-medium">User Accounts</span>
+                </a>
+
+                 <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
+                    href="{{route('subscription.index')}}">
+                    <i class="material-icons-outlined">workspace_premium</i>
+
+                    <span class="mx-2 text-sm font-medium">Premium Features</span>
+                </a>
 
             </div>
 

@@ -5,13 +5,32 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
+    <div class="stats shadow">
+  <div class="stat">
+    <div class="stat-figure text-primary">
+      <span class="material-icons-outlined">category</span>
     </div>
+    <div class="stat-title">Category Total</div>
+    <div class="stat-value">{{$categoryTotal}}</div>
+    <div class="stat-desc">Jan 1st - Feb 1st</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-figure text-primary">
+     <span class="material-icons-outlined">web_asset</span>
+    </div>
+    <div class="stat-title">Asset Total</div>
+    <div class="stat-value">{{$assetTotalActive}}</div>
+    <div class="stat-desc">↗︎ {{$assetToday}} Assets Today</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-figure text-primary">
+        <span class="material-icons-outlined">account_circle</span>
+    </div>
+    <div class="stat-title">User Total</div>
+    <div class="stat-value">{{$userTotal}}</div>
+    <div class="stat-desc">↗︎ {{$userTodayRegister}} Register Today</div>
+  </div>
+</div>
 </x-app-layout>

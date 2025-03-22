@@ -1,5 +1,11 @@
 <x-app-layout>
 
+     <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Add Your Assets') }}
+        </h2>
+    </x-slot>
+
     @include('creator.asset.create')
 
     <div class="my-10 sm:flex sm:items-center sm:justify-between">
@@ -19,7 +25,7 @@
 
     <div class="columns-2 md:columns-3 lg:columns-4 gap-4">
     @foreach ($asset as $item)
-        <div class="mb-4 rounded-xl overflow-hidden group break-inside-avoid">
+        <div data-aos="fade-up" class="mb-4 rounded-xl overflow-hidden group break-inside-avoid">
             <!-- Container Gambar -->
             <div class="relative">
                 <a href="{{route('asset.show', $item->id)}}">
@@ -53,7 +59,7 @@
             <div class="p-3">
                 <h3 class="text-sm font-semibold text-gray-800">{{$item->title}}</h3>
                 <div class="flex items-center mt-1">
-                    <img src="{{ asset('admin/images/profile.png') }}" alt="Profile" class="w-6 h-6 rounded-full mr-2">
+                    <img src="https://i.pravatar.cc/40" alt="Profile" class="w-6 h-6 rounded-full mr-2">
                     <span class="text-sm text-gray-700 font-semibold">{{$item->creator->name ?? "Unknow"}}</span>
                 </div>
             </div>

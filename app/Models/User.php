@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Asset;
+use App\Models\PremiumPayment;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +25,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_picture',
+        'premium_untill',
     ];
 
     /**
@@ -52,5 +55,22 @@ class User extends Authenticatable
     public function asset()
     {
         return $this->hasMany(Asset::class, 'creator_id');
+    }
+
+    public function premiumPayments()
+    {
+        return $this->hasMany(PremiumPayment::class, 'user_id');
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(PremiumPayment::class)
+        ->where('status', 'completed')
+        ->where('subcsription_end', '>' , now());
+    }
+
+    public function isPremium()
+    {
+        return $this->premium_until && $this->premium_until > now();
     }
 }

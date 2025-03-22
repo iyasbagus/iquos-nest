@@ -34,7 +34,7 @@ class PremiumPaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PremiumPayment $premiumPayment)
+    public function show(PremiumPayment $premium_payments)
     {
         //
     }
@@ -42,7 +42,7 @@ class PremiumPaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PremiumPayment $premiumPayment)
+    public function edit(PremiumPayment $premium_payments)
     {
         //
     }
@@ -50,7 +50,7 @@ class PremiumPaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PremiumPayment $premiumPayment)
+    public function update(Request $request, PremiumPayment $premium_payments)
     {
         //
     }
@@ -58,7 +58,7 @@ class PremiumPaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PremiumPayment $premiumPayment)
+    public function destroy(PremiumPayment $premium_payments)
     {
         //
     }

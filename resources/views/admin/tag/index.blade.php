@@ -2,7 +2,7 @@
     <main>
         <div class="px-1 mt-5">
 
-            @if ($errors->has('name'))
+            {{-- @if ($errors->has('name'))
                 <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
                     x-transition:enter="transition ease-out duration-300 transform"
                     x-transition:enter-start="opacity-0 translate-y-[-10px]"
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            @endif --}}
 
             <section class="container px-4 mx-auto">
                 <div class="sm:flex sm:items-center sm:justify-between">
@@ -63,12 +63,11 @@
                             <h2 class="text-lg font-medium text-gray-800 dark:text-white">Tags</h2>
 
                             <span
-                                class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">100
-                                vendors</span>
+                                class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full dark:bg-gray-800 dark:text-blue-400">{{$tagTotal}}
+                                data</span>
                         </div>
 
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">These companies have purchased in
-                            the last 12 months.</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">This is the available tag data.</p>
                     </div>
                 </div>
 
@@ -94,7 +93,19 @@
                             </div>
 
                             <!-- Tags List -->
-                            <div class="border p-4 rounded-lg">
+                            <div id="tag-list" class="mt-4 flex flex-wrap gap-2">
+                                @foreach ($tags as $tag)
+                                    <span
+                                        class="flex items-center px-3 py-1 text-sm font-normal text-gray-500 bg-gray-100 rounded-full">
+                                        {{ $tag->name }}
+                                        <button class="delete-tag text-red-500 ml-2"
+                                            data-slug="{{ $tag->slug }}">×</button>
+                                    </span>
+                                @endforeach
+                            </div>
+
+                            <!-- Tags List -->
+                            {{-- <div class="border p-4 rounded-lg">
                                 @php $no = 1; @endphp
                                 <div class="flex flex-wrap gap-2">
                                     @foreach ($tag as $item)
@@ -102,19 +113,19 @@
                                             class="flex px-3 py-1 text-sm font-normal text-gray-500 bg-gray-100 rounded-full dark:text-gray-400 gap-x-2 dark:bg-gray-800"">
                                             {{ $item->name }}
 
-                                            <form action="{{route('tag.destroy', $item->slug)}}" method="POST">
-                                            @method('DELETE')
-                                            @csrf
-                                            <button class="text-blue-500">&times;</button>
+                                            <form action="{{ route('tag.destroy', $item->slug) }}" method="POST">
+                                                @method('DELETE')
+                                                @csrf
+                                                <button class="text-blue-500">&times;</button>
                                             </form>
                                         </span>
                                     @endforeach
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <!-- Right Section: Add Tag Form -->
-                        <div class="row-span-1 p-6 bg-white rounded-lg shadow-md">
+                            <!-- Right Section: Add Tag Form -->
+                            {{-- <div class="row-span-1 p-6 bg-white rounded-lg shadow-md">
                             <form action="{{ route('tag.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <label for="name" class="block text-sm font-medium mb-1">Add Tag</label>
@@ -126,11 +137,122 @@
                                     <button type="reset" class="px-3 py-1 bg-white border rounded">Reset</button>
                                 </div>
                             </form>
+                        </div> --}}
+
+                            <div class="p-6 bg-white rounded-lg shadow-md">
+                                <label for="name" class="block text-sm font-medium mb-1">Add Tag</label>
+
+                                <!-- Input utama untuk Tagify -->
+                                <input id="tags-input" name="tags" placeholder="Add New Tags"
+                                    class="w-full p-2 border rounded mb-2" />
+
+                                <!-- Hidden input untuk menyimpan JSON -->
+                                <input type="hidden" name="tags" id="tags-hidden" />
+
+                                <div class="flex gap-2 mt-3">
+                                    <button id="submit-tag" type="button"
+                                        class="px-3 py-1 bg-purple-600 text-white rounded">Submit</button>
+                                    <button type="reset" id="reset-tags"
+                                        class="px-3 py-1 bg-white border rounded">Reset</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                </div>
             </section>
         </div>
     </main>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let input = document.querySelector("#tags-input");
+            let hiddenInput = document.querySelector("#tags-hidden");
+            let tagList = document.getElementById("tag-list");
+
+            let tagify = new Tagify(input);
+
+            // Update hidden input setiap ada perubahan
+            tagify.on("change", function() {
+                hiddenInput.value = JSON.stringify(tagify.value);
+            });
+
+            // **SUBMIT TAG**
+            document.getElementById("submit-tag").addEventListener("click", function(e) {
+                e.preventDefault(); // Mencegah refresh halaman
+
+                let tagNames = tagify.value.map(tag => tag.value); // Ambil array nama tag
+
+                if (tagNames.length === 0) {
+                    alert("Tag tidak boleh kosong!");
+                    return;
+                }
+
+                fetch("{{ route('tag.store') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").content
+                        },
+                        body: JSON.stringify({
+                            name: tagNames // Kirim array tag
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.tags) {
+                            data.tags.forEach(tag => {
+                                let newTag = document.createElement("span");
+                                newTag.classList.add("flex", "items-center", "px-3", "py-1",
+                                    "text-sm",
+                                    "font-normal", "text-gray-500", "bg-gray-100",
+                                    "rounded-full", "mr-2");
+                                newTag.innerHTML = `
+                            ${tag.name}
+                            <button class="delete-tag text-red-500 ml-2" data-slug="${tag.slug}">×</button>
+                        `;
+                                tagList.appendChild(newTag);
+                            });
+
+                            tagify.removeAllTags(); // Kosongkan input setelah submit
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+            });
+
+            // **HAPUS TAG (Event Delegation)**
+            document.addEventListener("click", function(e) {
+                if (e.target.classList.contains("delete-tag")) {
+                    let slug = e.target.getAttribute("data-slug");
+                    let tagElement = e.target.closest("span");
+
+                    console.log("Slug yang dikirim:", slug); // Debugging
+
+                    fetch("{{ route('tag.destroy', ':slug') }}".replace(':slug', slug), {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']")
+                                    .content
+                            }
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                tagElement.remove(); // Hapus tag jika berhasil
+                            } else {
+                                console.error("Gagal menghapus tag:", data.message);
+                            }
+                        })
+                        .catch(error => console.error("Error:", error));
+                }
+            });
+
+            // **RESET TAGS**
+            document.getElementById("reset-tags").addEventListener("click", function() {
+                tagify.removeAllTags();
+                hiddenInput.value = "";
+            });
+        });
+    </script>
+
 </x-app-layout>

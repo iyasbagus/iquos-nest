@@ -3,19 +3,27 @@
 namespace App\Http\Controllers\Creator;
 
 use App\Http\Controllers\Controller;
+
 use App\Models\Asset;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Tag;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class AssetController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
         $asset = Asset::where([['creator_id', Auth::id()], ['status', 'active']])->get();
         $category = Category::all();
-        return view('creator.asset.index', compact('asset', 'category'));
+        $tag = Tag::all();
+
+        return view('creator.asset.index', compact('asset', 'category', 'tag'));
     }
 
     /**
@@ -23,18 +31,23 @@ class AssetController extends Controller
      */
     public function create()
     {
-        $creator_id = User::all();
-        return view();
+        $category = Category::all();
+        $tag = Tag::all();
+
+        return view('asset.create', compact('category', 'tag'));
     }
 
     public function store(Request $request)
     {
+        // dd($request->all());
+
         $validated = $request->validate([
             'title' => 'required',
             'description' => 'required',
             'thumbnail_url' => 'required|image|mimes:jpg,jpeg,png,gif',
-            'file_url' => 'required|file|mimes:zip,rar,psd,ai,pdf,doc,docx,xlsx,txt',
-            'category_ids' => 'required|array', // User harus pilih minimal 1 kategori
+            'file_url' => 'required|file|mimes:zip,rar,psd,ai,pdf,doc,docx,xlsx,txt|max:102400',
+            'category_ids' => 'required|array|min:1',
+            'tag_ids' => 'required|array|min:1',
         ]);
 
         $asset = new Asset();
@@ -57,14 +70,16 @@ class AssetController extends Controller
             $file = $request->file('file_url');
             $file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
-            $file_path = $file->storeAs('public/files', $file_name);
+            $file_path = $file->storeAs('private/files', $file_name);
 
-            $asset->file_url = str_replace('public/', 'storage', $file_path);
+            $asset->file_url = $file_path;
         }
 
         $asset->save();
 
         $asset->category()->attach($request->category_ids);
+
+        $asset->tags()->attach($request->tag_ids);
 
         return redirect()->route('asset.index')->with('success', 'Asset uploaded and waiting for approval.');
     }
@@ -74,11 +89,25 @@ class AssetController extends Controller
      */
     public function show($id)
     {
-         // Ambil asset beserta kategori yang terkait
-        $asset = Asset::with('category')->findOrFail($id);
+        // Ambil asset beserta kategori yang terkait
+        $asset = Asset::with('category', 'tags')->findOrFail($id);
 
         return view('creator.asset.show', compact('asset'));
     }
+
+     public function download($id) {
+    $asset = Asset::findOrFail($id);
+
+    $filePath = $asset->file_url;
+
+    // Pastikan file ada di storage
+    if (!Storage::exists($filePath)) {
+        abort(404, 'File not found!');
+    }
+
+    // Ambil path file yang sesuai dengan Laravel storage
+    return response()->download(Storage::path($filePath));
+}
 
     /**
      * Show the form for editing the specified resource.

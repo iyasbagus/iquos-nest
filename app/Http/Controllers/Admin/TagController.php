@@ -12,11 +12,19 @@ class TagController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tag = Tag::all();
+        $tags = Tag::all();
 
-        return view('admin.tag.index', compact('tag'));
+        $tagTotal = Tag::count();
+
+        // Jika request datang dari AJAX, kembalikan JSON response
+        if ($request->ajax()) {
+            return response()->json($tags);
+        }
+
+        // Jika bukan AJAX, tampilkan halaman view
+        return view('admin.tag.index', compact('tags', 'tagTotal'));
     }
 
     /**
@@ -24,7 +32,7 @@ class TagController extends Controller
      */
     public function create()
     {
-         return view();
+        return view();
     }
 
     /**
@@ -32,25 +40,26 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(
-            [
-            'name' => 'required|unique:tags,name|max:255',
-            ],
-            [
-                'name.required' => 'Please enter Tag data',
-                'name.unique' => 'The Tag you entered already exists'
-            ]
+    $request->validate([
+        'name' => 'required|array|min:1', // Harus array
+        'name.*' => 'required|string|max:255|unique:tags,name',
+    ], [
+        'name.required' => 'Tag tidak boleh kosong!',
+        'name.*.unique' => 'Tag sudah ada!',
+    ]);
 
-    );
+    $tags = collect($request->name)->map(function ($tagName) {
+        return Tag::create([
+            'name' => $tagName,
+            'slug' => Str::slug($tagName),
+        ]);
+    });
 
-        $tag = new Tag();
-        $tag->name = $request->name;
-        $tag->slug = Str::slug($request->name);
-
-        $tag->save();
-        return redirect()->route('tag.index')
-            ->with('success', 'data berhasil ditambahkan');
-    }
+    return response()->json([
+        'message' => 'Tag berhasil ditambahkan!',
+        'tags' => $tags
+    ]);
+}
 
     public function show(Tag $tag)
     {
@@ -74,16 +83,16 @@ class TagController extends Controller
         $tag->slug = Str::slug($request->name);
 
         $tag->save();
-        return redirect()->route('tag.index')
-            ->with('success', 'data berhasil di edit');
+        return redirect()->route('tag.index')->with('success', 'data berhasil di edit');
     }
 
     public function destroy($slug)
-    {
-        $tag = Tag::where('slug', $slug)->firstOrFail();
-        $tag->delete();
+{
+    $tag = Tag::where('slug', $slug)->firstOrFail();
+    $tag->delete();
 
-        return redirect()->route('tag.index')
-            ->with('success', 'data berhasil dihapus');
-    }
+    return response()->json([
+        'success' => 'data berhasil dihapus'
+    ]);
+}
 }
