@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     // Proteksi API Kategori
-    Route::apiResource('category', CategoryController::class)
+    Route::apiResource('/category', CategoryController::class)
         ->parameters(['category' => 'slug']);
 
     // // Route API Asset

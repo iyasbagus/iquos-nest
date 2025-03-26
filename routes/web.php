@@ -31,6 +31,8 @@ use Illuminate\Support\Facades\File;
 
 Route::middleware('auth')->group(function () {
     Route::get('/explore-asset',[ExploreController::class, 'listAssetView'])->name('user.explore.listAssetView');
+    Route::get('/download/asset/{id}', [ExploreController::class, 'downloadAsset'])->name('user.explore.downloadAsset');
+    Route::get('/download/thumbnail/{id}', [ExploreController::class, 'downloadThumbnail'])->name('user.explore.downloadImage');
 
     Route::get('/profile-user', [ProfileUserController::class, 'edit'])->name('profileUser.edit');
     Route::patch('/profile-user', [ProfileUserController::class, 'update'])->name('profileUser.update');
