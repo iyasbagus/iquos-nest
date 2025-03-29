@@ -17,9 +17,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AssetAdminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $assetTotal = Asset::count();
@@ -45,22 +42,6 @@ class AssetAdminController extends Controller
         return redirect()->back()->with('error', 'Asset has been rejected.');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
     // Error Tai
     public function show($id)
     {
@@ -70,9 +51,6 @@ class AssetAdminController extends Controller
         return view('admin.asset.show', compact('asset'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Asset $asset)
     {
         $categories = Category::all();
@@ -85,9 +63,6 @@ class AssetAdminController extends Controller
         return view('admin.asset.edit', compact('asset', 'categories', 'tags', 'selectedTags', 'selectedCategories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         // dd($request->all());
@@ -144,21 +119,12 @@ class AssetAdminController extends Controller
         return redirect()->route('adminAsset.index')->with('success', 'Asset uploaded and waiting for approval.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $asset = Asset::where('id', $id)->firstOrFail();
 
-        if (!$asset) {
-            return redirect()->back()->with('error', 'Asset Not Found');
-        }
-
-        $file_path = public_path('admin/images/asset/' . $asset->thumbnail_url);
-        if (File::exists($file_path)) {
-            File::delete($file_path);
-        }
+        $asset->clearMediaCollection('assets');
+        $asset->clearMediaCollection('image');
 
         $asset->delete();
 

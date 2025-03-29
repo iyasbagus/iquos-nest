@@ -8,7 +8,7 @@
                             <h2 class="text-lg font-medium text-gray-800 dark:text-white">Assets</h2>
 
                             <span
-                                class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full dark:bg-gray-800 dark:text-blue-400">{{$assetTotal}}
+                                class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full dark:bg-gray-800 dark:text-blue-400">{{ $assetTotal }}
                                 vendors</span>
                         </div>
 
@@ -98,9 +98,10 @@
                                                 </td>
                                                 <td class="px-7 py-4 text-sm whitespace-nowrap">
                                                     <div class="flex items-center">
+                                                        @foreach ($item->getMedia('images') as $image)
                                                         <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0"
-                                                            src="{{ asset('admin/images/asset/' . $item->thumbnail_url) }}"
-                                                            alt="">
+                                                            src="{{ $image->getUrl() }}" alt="palah">
+                                                        @endforeach
                                                     </div>
                                                 </td>
                                                 <td class="px-9 py-4 text-sm font-medium whitespace-nowrap">
@@ -159,7 +160,8 @@
 
                                                                     <i class="material-icons-outlined">task_alt</i>
 
-                                                                    <button class="ml-2" type="submit">Active</button>
+                                                                    <button class="ml-2"
+                                                                        type="submit">Active</button>
                                                                 </form>
 
                                                                 <form
@@ -169,37 +171,42 @@
 
                                                                     <i class="material-icons-outlined">highlight_off</i>
 
-                                                                    <button class="ml-2" type="submit">Rejected</button>
+                                                                    <button class="ml-2"
+                                                                        type="submit">Rejected</button>
                                                                 </form>
                                                             @endif
-                                                            <a href="{{route('adminAsset.show', $item->id)}}"
-                                                                    class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+                                                            <a href="{{ route('adminAsset.show', $item->id) }}"
+                                                                class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
 
-                                                                    <i class="material-icons-outlined">info</i>
+                                                                <i class="material-icons-outlined">info</i>
 
-                                                                    <span class="mx-1">
-                                                                        Show Data
-                                                                    </span>
-                                                                </a>
+                                                                <span class="mx-1">
+                                                                    Show Data
+                                                                </span>
+                                                            </a>
 
-                                                                <a href="{{route('adminAsset.edit', $item->id)}}"
-                                                                    class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+                                                            <a href="{{ route('adminAsset.edit', $item->id) }}"
+                                                                class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
 
-                                                                    <i class="material-icons-outlined">edit</i>
+                                                                <i class="material-icons-outlined">edit</i>
 
-                                                                    <span class="mx-1">
-                                                                        Edit data
-                                                                    </span>
-                                                                </a>
+                                                                <span class="mx-1">
+                                                                    Edit data
+                                                                </span>
+                                                            </a>
 
-                                                                <form action="{{route('adminAsset.destroy', $item->id)}}" method="POST" class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"">
-                                                                    @method('DELETE')
-                                                                    @csrf
+                                                            <form
+                                                                action="{{ route('adminAsset.destroy', $item->id) }}"
+                                                                method="POST"
+                                                                class="flex items-center p-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"">
+                                                                @method('DELETE')
+                                                                @csrf
 
-                                                                    <i class="material-icons-outlined">delete</i>
+                                                                <i class="material-icons-outlined">delete</i>
 
-                                                                    <button class="ml-2" type="submit">Delete Data</button>
-                                                                </form>
+                                                                <button class="ml-2" type="submit">Delete
+                                                                    Data</button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </td>

@@ -13,43 +13,34 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Intervention\Image\Facades\Image;
 
 class AssetController extends Controller
 {
-
-    public function index(Request $request)
+    public function index()
     {
         $asset = Asset::where([['creator_id', Auth::id()], ['status', 'active']])->get();
         $category = Category::all();
         $tag = Tag::all();
 
-        return view('creator.asset.index', compact('asset', 'category', 'tag'));
-    }
+        $assetTotalCreator = Asset::where('creator_id', Auth::id())->count();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $category = Category::all();
-        $tag = Tag::all();
-
-        return view('asset.create', compact('category', 'tag'));
+        return view('creator.asset.index', compact('asset', 'category', 'tag', 'assetTotalCreator'));
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
-
+        // Validasi input
         $validated = $request->validate([
             'title' => 'required',
             'description' => 'required',
-            'thumbnail_url' => 'required|image|mimes:jpg,jpeg,png,gif',
-            'file_url' => 'required|file|mimes:zip,rar,psd,ai,pdf,doc,docx,xlsx,txt|max:102400',
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif',
+            'file' => 'required|file|mimes:zip,rar,psd,ai,pdf,doc,docx,xlsx,txt|max:102400',
             'category_ids' => 'required|array|min:1',
             'tag_ids' => 'required|array|min:1',
         ]);
 
+        // Simpan data asset
         $asset = new Asset();
         $asset->title = $request->title;
         $asset->description = $request->description;
@@ -58,35 +49,38 @@ class AssetController extends Controller
         $asset->downloads = $request->downloads ?? 0;
         $asset->rating = $request->rating ?? 0;
         $asset->status = $request->status ?? 'pending';
-
-        if ($request->hasFile('thumbnail_url')) {
-            $img = $request->file('thumbnail_url');
-            $name = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
-            $img->move('admin/images/asset/', $name);
-            $asset->thumbnail_url = $name;
-        }
-
-        if ($request->hasFile('file_url')) {
-            $file = $request->file('file_url');
-            $file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-            $file_path = $file->storeAs('private/files', $file_name);
-
-            $asset->file_url = $file_path;
-        }
-
         $asset->save();
 
-        $asset->category()->attach($request->category_ids);
+        // 🔹 Simpan file ke Media Library dengan nama unik
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = now()->timestamp . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
 
+            $asset->addMedia($file)->usingFileName($fileName)->toMediaCollection('assets', 'public');
+        }
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = now()->timestamp . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+            $media = $asset->addMedia($image)->usingFileName($imageName)->toMediaCollection('images', 'public');
+
+            // 🔹 Simpan ukuran asli gambar
+            $imagePath = $media->getPath();
+            $img = Image::make($imagePath);
+
+            $media->setCustomProperty('original_width', $img->width());
+            $media->setCustomProperty('original_height', $img->height());
+            $media->save(); // Simpan perubahan properti
+        }
+
+        // Hubungkan kategori dan tag
+        $asset->category()->attach($request->category_ids);
         $asset->tags()->attach($request->tag_ids);
 
         return redirect()->route('asset.index')->with('success', 'Asset uploaded and waiting for approval.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         // Ambil asset beserta kategori yang terkait
@@ -94,20 +88,6 @@ class AssetController extends Controller
 
         return view('creator.asset.show', compact('asset'));
     }
-
-     public function download($id) {
-    $asset = Asset::findOrFail($id);
-
-    $filePath = $asset->file_url;
-
-    // Pastikan file ada di storage
-    if (!Storage::exists($filePath)) {
-        abort(404, 'File not found!');
-    }
-
-    // Ambil path file yang sesuai dengan Laravel storage
-    return response()->download(Storage::path($filePath));
-}
 
     /**
      * Show the form for editing the specified resource.
@@ -132,4 +112,5 @@ class AssetController extends Controller
     {
         //
     }
+
 }

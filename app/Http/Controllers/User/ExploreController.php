@@ -11,41 +11,50 @@ use App\Models\Asset;
 use App\Models\Tag;
 
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ExploreController extends Controller
 {
     public function listAssetView()
     {
         $category = Category::all();
-        $asset = Asset::with('tags')->get();
+        $asset = Asset::with('tags', 'media')->get();
         $tags = Tag::all();
 
         return view('user.explore', compact('category', 'asset', 'tags'));
     }
 
-    public function downloadAsset($id)
+    public function downloadImageById(Request $request)
     {
-        $asset = Asset::findOrFail($id);
+        $modelId = $request->query('modelId');
+        $collectionName = $request->query('collection');
+        $size = $request->query('size', 'original');
 
-        $filePath = $asset->file_url;
+        // Cari media berdasarkan model_id dan collection_name
+        $media = Media::where('model_id', $modelId)->where('collection_name', $collectionName)->first();
 
-        // Pastikan file ada di storage
-        if (!Storage::exists($filePath)) {
-            abort(404, 'File not found!');
+        if (!$media) {
+            return abort(404, 'Media not found');
         }
 
-        // Ambil path file yang sesuai dengan Laravel storage
-        return response()->download(Storage::path($filePath));
-    }
-
-    public function downloadImage($id)
-    {
-        $asset = Asset::findOrFail($id);
-
-        if (!Storage::disk('public')->exists($asset->thumbnail_url)) {
-            abort(404, 'Thumbnail not found!');
+        // Pilih path sesuai ukuran
+        if ($size === 'small') {
+            $path = $media->getPath('small');
+        } elseif ($size === 'medium') {
+            $path = $media->getPath('medium');
+        } elseif ($size === 'large') {
+            $path = $media->getPath('large');
+        } else {
+            $path = $media->getPath(); // original
         }
 
-        return response()->download(storage_path('app/public/' . $asset->thumbnail_url));
+        // // Ambil path file
+        // $path = $media->getPath();
+
+        if (!file_exists($path)) {
+            return abort(404, 'File not found');
+        }
+
+        return response()->download($path, $media->file_name);
     }
 }

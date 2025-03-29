@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('file_url');
-            $table->string('thumbnail_url');
+            // $table->string('file_url');
+            // $table->string('thumbnail_url');
             $table->unsignedBigInteger('creator_id');
             $table->boolean('is_premium_only');
             $table->integer('downloads')->nullable();

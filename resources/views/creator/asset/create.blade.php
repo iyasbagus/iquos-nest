@@ -7,7 +7,7 @@
                     <label class="block text-sm text-gray-500 dark:text-gray-300">File</label>
 
                     <!-- Input File (Tersembunyi) -->
-                    <input type="file" id="fileInput" name="thumbnail_url" class="hidden" accept="image/*">
+                    <input type="file" id="fileInput" name="image" class="hidden" accept="image/*">
 
                     <!-- Kotak Upload -->
                     <div id="uploadBox"
@@ -51,8 +51,8 @@
 
                 {{-- ini input file --}}
                 <div>
-                    <label for="file_url" class="block text-gray-700 font-semibold">File Url</label>
-                    <input name="file_url" id="file_url" type="file" placeholder="File Url"
+                    <label for="file" class="block text-gray-700 font-semibold">File Url</label>
+                    <input name="file" id="file" type="file" placeholder="File Url"
                         class="block w-full px-3 py-2 mt-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg file:bg-gray-200 file:text-gray-700 file:text-sm file:px-4 file:py-1 file:border-none file:rounded-full">
                 </div>
 

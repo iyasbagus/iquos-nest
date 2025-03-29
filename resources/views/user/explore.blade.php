@@ -19,8 +19,8 @@
                         <div class="relative">
                             <!-- Tombol Buka Modal -->
                             <button
-                                @click="showAsset({{ json_encode($item) }}); document.body.classList.add('overflow-hidden')">
-                                <img src="{{ asset('admin/images/asset/' . $item->thumbnail_url) }}" alt="Feed Image"
+                                @click="showAsset({{ json_encode($item) }}, '{{ $item->getFirstMediaUrl('images') }}'); document.body.classList.add('overflow-hidden')">
+                                <img src="{{ $item->getFirstMediaUrl('images') }}" alt="Feed Image"
                                     class="w-full h-auto rounded-xl transition duration-300 group-hover:brightness-50">
                             </button>
 
@@ -71,17 +71,58 @@
                                 <span class="material-icons-outlined text-lg">share</span>
                             </button>
                             <button
-                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition"><a href="{{ route('user.explore.downloadAsset', $item->id) }}">
-                                <span>Download</span>
-                                <span class="material-icons-outlined text-lg">download</span>
+                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition"><a
+                                    href="#">
+                                    <span class="flex gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="size-4 mt-1">
+                                            <path d="M12 3v14"></path>
+                                            <path d="m6 12 6 6 6-6"></path>
+                                            <path d="M5 21h14"></path>
+                                        </svg> Download
+                                    </span>
                                 </a>
                             </button>
+
+                            <x-dropdown>
+
+                                <x-slot name="trigger">
+
+                                    <button type="button" class="px-4 py-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                    </button>
+
+                                </x-slot>
+
+                                <x-slot name="content">
+
+                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images'">
+                                        Original Size
+                                    </x-dropdown-link>
+                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' + '&size=small'">
+                                        Small 300 x 300
+                                    </x-dropdown-link>
+                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' + '&size=medium'">
+                                        Medium 600 x 600
+                                    </x-dropdown-link>
+                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' + '&size=large'">
+                                        Large 1000 x 1000
+                                    </x-dropdown-link>
+
+                                </x-slot>
+
+                            </x-dropdown>
+
                         </div>
                     </div>
 
                     <!-- Konten Modal -->
                     <div class="mt-4">
-                        <img :src="'/admin/images/asset/' + asset.thumbnail_url" alt="Image" class="rounded-lg px-28">
+                        <img :src="modalImage" alt="Image" class="rounded-lg px-28">
 
                         <div class="mt-6 text-xl font-bold">
                             <span x-text="asset.title"></span>
@@ -114,16 +155,21 @@
                 function isOpenAsset() {
                     return {
                         showModal: false,
+                        modalImage: '',
                         asset: {
                             tags: []
                         },
-                        showAsset(asset) {
+                        showAsset(asset, image) {
+                            console.log(asset); // Debug asset di console browser
+                            console.log(image); // Debug image URL
+                            this.modalImage = image;
                             this.asset = asset;
                             this.showModal = true;
                             document.body.classList.add('overflow-hidden');
                         },
                         closeModal() {
                             this.showModal = false;
+                            this.modalImage = '';
                             this.asset = {};
                             document.body.classList.remove('overflow-hidden');
                         },

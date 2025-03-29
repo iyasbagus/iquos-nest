@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asset;
 use App\Models\Download;
 use Illuminate\Http\Request;
 
@@ -10,6 +11,7 @@ class DownloadController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         //
