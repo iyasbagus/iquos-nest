@@ -122,7 +122,7 @@
                                                 <td class="px-7 py-4 text-sm font-medium whitespace-nowrap">
                                                     <div>
                                                         <h2 class="font-medium text-gray-800 dark:text-white ">
-                                                            User
+                                                            {{ $item->getRoleNames()->first() }}
                                                         </h2>
                                                     </div>
                                                 </td>

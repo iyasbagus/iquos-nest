@@ -5,13 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>IQUOS Nest</title>
+    <link rel="Icon" type="png" href="../iquosnest-logo-title.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
-     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -1212,7 +1213,7 @@
     @endif
 </head>
 
-<body>
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
     @include('user.components.navbar')
 
     <main>
@@ -1226,6 +1227,8 @@
     <section class="px-14 mt-10">
         @include('user.partials-welcome.asset')
     </section> --}}
+    @include('user.components.footer')
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>
 
 </html>

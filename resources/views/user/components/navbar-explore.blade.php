@@ -9,9 +9,9 @@
 
 
             @auth
-                <button><span class="material-icons-outlined">notifications</span></button>
-                <a href="{{ route('profileUser.edit') }}"><img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full"
-                        alt="User" /></a>
+                {{-- <button><span class="material-icons-outlined">notifications</span></button>
+                <a href="{{ route('profileUser.edit') }}"><img src="{{ $user['profile_picture'] ?? \App\Helpers\AvatarHelper::generateAvatar($user['name']) }}" class="w-10 h-10 rounded-full"
+                        alt="User" /></a> --}}
             @else
                 <a href="{{ route('login') }}">Log in</a>
 

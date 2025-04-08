@@ -6,7 +6,7 @@
         <section class="flex justify-center items-center">
             <div class="flex space-x-9">
                 @foreach ($category as $item)
-                    <button class="px-4 py-2 rounded-full bg-gray-200 text-black font-medium">{{ $item->name }}</button>
+                    <button class="px-4 py-2 rounded-full bg-gray-200 text-black font-medium dark:text-white dark:bg-gray-800">{{ $item->name }}</button>
                 @endforeach
             </div>
         </section>
@@ -26,7 +26,7 @@
 
                             <!-- Tombol Hover -->
                             <button
-                                class="absolute top-3 right-3 bg-blue-500 text-white px-3 py-1 text-sm font-semibold rounded-lg shadow opacity-0 group-hover:opacity-100 transition duration-300">
+                                class="absolute top-3 right-3 bg-purple-500 text-white px-3 py-1 text-sm font-semibold rounded-lg shadow opacity-0 group-hover:opacity-100 transition duration-300">
                                 Simpan
                             </button>
 
@@ -38,11 +38,11 @@
 
                         <!-- Info Asset -->
                         <div class="p-3">
-                            <h3 class="text-sm font-semibold text-gray-800">{{ $item->title }}</h3>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-white">{{ $item->title }}</h3>
                             <div class="flex items-center mt-1">
-                                <img src="https://i.pravatar.cc/40" alt="Profile" class="w-6 h-6 rounded-full mr-2">
+                                <img src="{{ $item->creator['profile_picture'] ?? \App\Helpers\AvatarHelper::generateAvatar($item->creator['name']) }}" alt="Profile" class="w-6 h-6 rounded-full mr-2">
                                 <span
-                                    class="text-sm text-gray-700 font-semibold">{{ $item->creator->name ?? 'Unknown' }}</span>
+                                    class="text-sm text-gray-700 font-semibold dark:text-white">{{ $item->creator->name ?? 'Unknown' }}</span>
                             </div>
                         </div>
                     </div>
@@ -52,27 +52,25 @@
 
 
             <!-- Modal -->
-            <div x-show="showModal" @keydown.escape.window="closeModal()"
+            <div x-show="showModal" @keydown.escape.window="closeModal()" x-cloak
                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div class="bg-white rounded-lg shadow-lg p-6 w-[72rem] h-[96vh] overflow-auto">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-[72rem] h-[96vh] overflow-auto dark:bg-gray-800">
                     <!-- Header Modal -->
-                    <div class="flex justify-between items-center border-b pb-2 bg-white">
+                    <div class="flex justify-between items-center border-b pb-2 bg-white dark:bg-gray-800">
                         <div class="flex items-center">
-                            <img src="https://i.pravatar.cc/40" alt="User" class="rounded-full w-10 h-10">
+                          <img :src="asset.creator.profile_picture ?? '{{ \App\Helpers\AvatarHelper::generateAvatar('') }}' + asset.creator.name" alt="User" class="rounded-full w-10 h-10">
                             <div class="ml-3">
-                                <p class="text-sm font-semibold">{{ $item->creator->name ?? 'Unknown' }}</p>
-                                <p class="text-xs text-gray-500" x-text="asset.creator?.name ?? 'Creator'"></p>
+                                <p class="text-sm font-semibold" x-text="asset.creator.name"></p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <button
-                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition">
+                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-gray-800">
                                 <span>Share</span>
                                 <span class="material-icons-outlined text-lg">share</span>
                             </button>
                             <button
-                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition"><a
-                                    href="#">
+                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-gray-800"><a :href="'{{ route('download.assets') }}?modelId=' + asset.id + '&collection=assets'">
                                     <span class="flex gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" class="size-4 mt-1">
@@ -100,16 +98,23 @@
 
                                 <x-slot name="content">
 
-                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images'">
+                                    <x-dropdown-link
+                                        x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images'">
                                         Original Size
                                     </x-dropdown-link>
-                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' + '&size=small'">
+                                    <x-dropdown-link
+                                        x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' +
+                                            '&size=small'">
                                         Small 300 x 300
                                     </x-dropdown-link>
-                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' + '&size=medium'">
+                                    <x-dropdown-link
+                                        x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' +
+                                            '&size=medium'">
                                         Medium 600 x 600
                                     </x-dropdown-link>
-                                    <x-dropdown-link x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' + '&size=large'">
+                                    <x-dropdown-link
+                                        x-bind:href="'{{ route('download.image') }}?modelId=' + asset.id + '&collection=images' +
+                                            '&size=large'">
                                         Large 1000 x 1000
                                     </x-dropdown-link>
 
@@ -142,13 +147,20 @@
                     <div class="mt-4 flex justify-between items-center">
                         <div class="flex gap-2">
                             <template x-for="item in asset.tags" :key="item.name">
-                                <span class="bg-gray-200 px-2 py-1 text-sm rounded" x-text="item.name"></span>
+                                <span class="bg-gray-200 px-2 py-1 text-sm rounded dark:bg-gray-700" x-text="item.name"></span>
                             </template>
                         </div>
 
                     </div>
                 </div>
             </div>
+
+            <button x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
+                @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode); darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
+                class="absolute bottom-10 right-10 size-16 p-2 bg-gray-200 dark:bg-gray-800 rounded-full">
+                <span x-show="!darkMode" class="material-icons-outlined">light_mode</span>
+                <span x-show="darkMode" class="material-icons-outlined">dark_mode</span>
+            </button>
 
             <!-- Alpine.js -->
             <script>

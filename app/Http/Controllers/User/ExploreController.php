@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Asset;
 use App\Models\Tag;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -17,11 +18,12 @@ class ExploreController extends Controller
 {
     public function listAssetView()
     {
+        $user = Auth::user();
         $category = Category::all();
-        $asset = Asset::with('tags', 'media')->get();
+        $asset = Asset::with('tags', 'media', 'creator')->where('status', 'active')->get();
         $tags = Tag::all();
 
-        return view('user.explore', compact('category', 'asset', 'tags'));
+        return view('user.explore', compact('category', 'asset', 'tags', 'user'));
     }
 
     public function downloadImageById(Request $request)
@@ -54,6 +56,23 @@ class ExploreController extends Controller
         if (!file_exists($path)) {
             return abort(404, 'File not found');
         }
+
+        return response()->download($path, $media->file_name);
+    }
+
+    public function downloadAssetFileById(Request $request)
+    {
+        $modelId = $request->query('modelId');
+        $collectionName = $request->query('collection');
+
+        // Cari media berdasarkan model_id dan collection_name
+        $media = Media::where('model_id', $modelId)->where('collection_name', $collectionName)->first();
+
+        if (!$media) {
+            return abort(404, 'Media not found');
+        }
+
+        $path = $media->getPath();
 
         return response()->download($path, $media->file_name);
     }

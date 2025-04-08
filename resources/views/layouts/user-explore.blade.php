@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>Explore Assets</title>
+    <link rel="Icon" type="png" href="../iquosnest-logo-title.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,6 +14,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -1213,7 +1220,7 @@
     @endif
 </head>
 
-<body>
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
 
     <div class="flex">
         @include('user.components.sidebar-explore')
