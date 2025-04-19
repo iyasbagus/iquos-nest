@@ -4,9 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 
-
-
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Asset;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,33 +18,72 @@ class ProfileUserController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function showProfile($username)
+    // public function showProfile($id)
+    // {
+    //     $user = User::where('username', $username)->firstOrFail();
+
+    //     // ambil semua asset yang dibuat user ini
+    //     $assets = $user->assets()->latest()->paginate(9);
+
+    //     return view('user.profile', compact('user', 'assets'));
+    // }
+
+    public function show()
     {
-        $user = User::where('username', $username)->firstOrFail();
-        return view('user/profile', compact('user'));
+        $user = Auth::user(); // user yang login
+        $assets = $user->asset()->latest()->paginate(9); // ambil asset yang dia upload
+
+        return view('user.profile', compact('user', 'assets'));
     }
 
-    public function edit(Request $request): View
+    public function updatePhoto(Request $request)
     {
-        return view('user/profile', [
-            'user' => $request->user(),
+        $request->validate([
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        $user = Auth::user();
+
+        $user->clearMediaCollection('profile_picture');
+        // Simpan ke media library
+        $user->addMediaFromRequest('profile_picture')->toMediaCollection('profile_picture');
+
+        return back()->with('success', 'Foto profil berhasil diperbarui.');
+    }
+
+    public function updateBanner(Request $request)
+    {
+        $request->validate([
+            'banner' => 'nullable|image|mimes:png,jpg,jpeg,gif|max:2048',
+        ]);
+
+        $user = Auth::user();
+
+        $user->clearMediaCollection('banner_image');
+        // Simpan ke media library
+        $user->addMediaFromRequest('banner_image')->toMediaCollection('banner_image');
+
+        return back()->with('success', 'Banner berhasil diperbarui');
     }
 
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request)
     {
-        $request->user()->fill($request->validated());
+        $request->validate([
+            'username' => 'required|string|alpha_dash|unique:users,username,' . auth()->id(),
+        ]);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+        $user = Auth::user();
 
-        $request->user()->save();
+        $user->update([
+            'name' => $request->name,
+            'username' => $request->username,
+            'bio' => $request->bio,
+        ]);
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
     /**

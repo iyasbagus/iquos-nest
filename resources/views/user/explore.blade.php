@@ -2,11 +2,17 @@
 
 @section('content-explore')
     <main x-data="isOpenAsset()">
+        @if (session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
         <!-- Kategori -->
         <section class="flex justify-center items-center">
             <div class="flex space-x-9">
                 @foreach ($category as $item)
-                    <button class="px-4 py-2 rounded-full bg-gray-200 text-black font-medium dark:text-white dark:bg-gray-800">{{ $item->name }}</button>
+                    <button
+                        class="px-4 py-2 rounded-full bg-gray-200 text-black font-medium dark:text-white dark:bg-gray-800">{{ $item->name }}</button>
                 @endforeach
             </div>
         </section>
@@ -14,8 +20,12 @@
         <!-- Grid Asset -->
         <section class="px-5 mt-10">
             <div class="columns-2 md:columns-3 lg:columns-4 gap-4">
+            @if($asset->isEmpty())
+                <p class="text-center">Asset Belum Ada</p>
+                @else
+
                 @foreach ($asset as $item)
-                    <div data-aos="fade-up" class="mb-4 rounded-xl overflow-hidden group break-inside-avoid">
+                    <div class="mb-4 rounded-xl overflow-hidden group break-inside-avoid">
                         <div class="relative">
                             <!-- Tombol Buka Modal -->
                             <button
@@ -31,8 +41,8 @@
                             </button>
 
                             <button
-                                class="absolute bottom-3 left-3 px-3 py-1 text-sm font-semibold rounded-lg shadow opacity-0 group-hover:opacity-100 transition duration-300 {{ $item->is_premium_only ? 'text-gray-700 bg-gray-100' : 'text-yellow-600 bg-yellow-100' }}">
-                                {{ $item->is_premium_only ? 'Free' : 'Premium' }}
+                                class="absolute bottom-3 left-3 px-3 py-1 text-sm font-semibold rounded-lg shadow opacity-0 group-hover:opacity-100 transition duration-300 {{ $item->is_premium_only ? 'text-yello-600 bg-yellow-100' : 'text-gray-700 bg-gray-100' }}">
+                                {{ $item->is_premium_only ? 'Premium' : 'Free' }}
                             </button>
                         </div>
 
@@ -40,7 +50,8 @@
                         <div class="p-3">
                             <h3 class="text-sm font-semibold text-gray-800 dark:text-white">{{ $item->title }}</h3>
                             <div class="flex items-center mt-1">
-                                <img src="{{ $item->creator['profile_picture'] ?? \App\Helpers\AvatarHelper::generateAvatar($item->creator['name']) }}" alt="Profile" class="w-6 h-6 rounded-full mr-2">
+                                <img src="{{ $item->creator->getFirstMediaUrl('profile_picture') ?: \App\Helpers\AvatarHelper::generateAvatar($item->creator['name']) }}"
+                                    alt="Profile" class="w-6 h-6 rounded-full mr-2">
                                 <span
                                     class="text-sm text-gray-700 font-semibold dark:text-white">{{ $item->creator->name ?? 'Unknown' }}</span>
                             </div>
@@ -48,6 +59,8 @@
                     </div>
                 @endforeach
             </div>
+            @endif
+
 
 
 
@@ -58,7 +71,10 @@
                     <!-- Header Modal -->
                     <div class="flex justify-between items-center border-b pb-2 bg-white dark:bg-gray-800">
                         <div class="flex items-center">
-                          <img :src="asset.creator.profile_picture ?? '{{ \App\Helpers\AvatarHelper::generateAvatar('') }}' + asset.creator.name" alt="User" class="rounded-full w-10 h-10">
+                            <a :href="`/creator/${asset.creator.username}`">
+                                <img :src="asset.creator.profile_picture"
+                                    alt="User" class="rounded-full w-10 h-10">
+                            </a>
                             <div class="ml-3">
                                 <p class="text-sm font-semibold" x-text="asset.creator.name"></p>
                             </div>
@@ -70,7 +86,8 @@
                                 <span class="material-icons-outlined text-lg">share</span>
                             </button>
                             <button
-                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-gray-800"><a :href="'{{ route('download.assets') }}?modelId=' + asset.id + '&collection=assets'">
+                                class="flex gap-2 border border-gray-800 text-gray-800 px-4 py-1 rounded-md hover:bg-gray-800 hover:text-white transition dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-gray-800"><a
+                                    :href="'{{ route('download.assets') }}?modelId=' + asset.id + '&collection=assets'">
                                     <span class="flex gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" class="size-4 mt-1">
@@ -147,7 +164,8 @@
                     <div class="mt-4 flex justify-between items-center">
                         <div class="flex gap-2">
                             <template x-for="item in asset.tags" :key="item.name">
-                                <span class="bg-gray-200 px-2 py-1 text-sm rounded dark:bg-gray-700" x-text="item.name"></span>
+                                <span class="bg-gray-200 px-2 py-1 text-sm rounded dark:bg-gray-700"
+                                    x-text="item.name"></span>
                             </template>
                         </div>
 
@@ -157,7 +175,7 @@
 
             <button x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
                 @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode); darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
-                class="absolute bottom-10 right-10 size-16 p-2 bg-gray-200 dark:bg-gray-800 rounded-full">
+                class="fixed bottom-10 right-10 size-16 p-2 bg-gray-200 dark:bg-gray-800 rounded-full">
                 <span x-show="!darkMode" class="material-icons-outlined">light_mode</span>
                 <span x-show="darkMode" class="material-icons-outlined">dark_mode</span>
             </button>
@@ -189,5 +207,63 @@
                 }
             </script>
         </section>
+
+        @if($asset->isEmpty())
+
+        @else
+        <section class="mt-10">
+            <ul class="flex justify-center gap-1 text-gray-900">
+                <li>
+                    <a href="#"
+                        class="grid size-8 place-content-center rounded border border-gray-200 transition-colors hover:bg-gray-50 rtl:rotate-180"
+                        aria-label="Previous page">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#"
+                        class="block size-8 rounded border border-gray-200 text-center text-sm/8 font-medium transition-colors hover:bg-gray-50">
+                        1
+                    </a>
+                </li>
+
+                <li
+                    class="block size-8 rounded border border-indigo-600 bg-indigo-600 text-center text-sm/8 font-medium text-white">
+                    2
+                </li>
+
+                <li>
+                    <a href="#"
+                        class="block size-8 rounded border border-gray-200 text-center text-sm/8 font-medium transition-colors hover:bg-gray-50">
+                        3
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#"
+                        class="block size-8 rounded border border-gray-200 text-center text-sm/8 font-medium transition-colors hover:bg-gray-50">
+                        4
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#"
+                        class="grid size-8 place-content-center rounded border border-gray-200 transition-colors hover:bg-gray-50 rtl:rotate-180"
+                        aria-label="Next page">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </section>
+         @endif
     </main>
 @endsection

@@ -27,7 +27,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('/profile', [App\Http\Controllers\Api\ProfileController::class, 'indexProfile']);
+    
     Route::get('/assets', [App\Http\Controllers\Api\AssetController::class, 'indexAssets']);
+    Route::get('/assets/{id}', [App\Http\Controllers\Api\AssetController::class, 'showAssets']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 

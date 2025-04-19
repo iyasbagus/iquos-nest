@@ -12,8 +12,8 @@
 
     <div class="flex flex-col space-y-6">
         <i class="p-1.5 material-icons-outlined">notifications</i>
-        <a href="{{ route('profileUser.edit') }}">
-            <img class="object-cover w-8 h-8 rounded-full" src="{{ $user['profile_picture'] ?? \App\Helpers\AvatarHelper::generateAvatar($user['name']) }}" alt="" />
+        <a href="{{ route('profileUser.show') }}">
+            <img class="object-cover w-8 h-8 rounded-full" src="{{ $user->getFirstMediaUrl('profile_picture') ?: \App\Helpers\AvatarHelper::generateAvatar($user->name) }}" alt="" />
         </a>
     </div>
 </aside>

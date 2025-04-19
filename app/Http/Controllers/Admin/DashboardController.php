@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Category;
 use App\Models\Asset;
+use App\Models\CreatorApplication;
 use App\Models\User;
 
 use Carbon\Carbon;
@@ -24,6 +25,12 @@ class DashboardController extends Controller
         //total keseluruhan user
         $userTotal = User::count();
 
+        // total lamaran menjadi creator
+        $applicationTotal = CreatorApplication::count();
+
+        //total lamaran hari ini
+        $applicationTotalToday = CreatorApplication::whereDate('created_at', Carbon::today())->count();
+
         //asset yang ditambahkan hari ini
         $assetToday = Asset::where('status', 'active')
         ->whereDate('updated_at', Carbon::today())->count();
@@ -31,7 +38,7 @@ class DashboardController extends Controller
         //User yang register hari ini
         $userTodayRegister = User::whereDate('created_at', Carbon::today())->count();
 
-        return view('dashboard',compact('categoryTotal', 'assetTotalActive', 'userTotal' ,'assetToday', 'userTodayRegister'));
+        return view('dashboard',compact('categoryTotal', 'assetTotalActive', 'userTotal' ,'assetToday', 'userTodayRegister', 'applicationTotal', 'applicationTotalToday'));
     }
 
     public function creatorDashboard()

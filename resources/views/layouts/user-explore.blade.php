@@ -1233,6 +1233,8 @@
             <div class="p-6">
                 @yield('content-explore')
             </div>
+
+            @include('user.components.footer-explore')
         </div>
     </div>
 

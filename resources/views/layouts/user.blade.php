@@ -13,6 +13,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -1211,13 +1212,21 @@
             }
         </style>
     @endif
+    <style>
+        .gradient-text {
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
 </head>
 
 <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
     @include('user.components.navbar')
 
     <main>
-    @yield('usercontent')
+        @yield('usercontent')
     </main>
 
     {{-- <section class="flex justify-center items-center mt-16">
@@ -1229,6 +1238,35 @@
     </section> --}}
     @include('user.components.footer')
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    @if (session('success'))
+        <script>
+            Toastify({
+                text: "{{ session('success') }}",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#4ade80",
+                stopOnFocus: true,
+                 // hijau
+            }).showToast();
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Toastify({
+                text: "{{ $errors->first() }}",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#f87171", // merah
+            }).showToast();
+        </script>
+    @endif
 </body>
 
 </html>

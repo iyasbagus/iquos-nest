@@ -63,11 +63,12 @@
                             <h2 class="text-lg font-medium text-gray-800 dark:text-white">Category</h2>
 
                             <span
-                                class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full dark:bg-gray-800 dark:text-blue-400">{{$categoryTotal}}
+                                class="px-3 py-1 text-xs text-purple-600 bg-purple-200 rounded-full dark:bg-gray-800 dark:text-blue-400">{{ $categoryTotal }}
                                 data</span>
                         </div>
 
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">This is the available category data.</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">This is the available category data.
+                        </p>
                     </div>
                 </div>
 
@@ -155,16 +156,19 @@
                                                 </td>
                                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                                     <div class="flex items-center">
-                                                        <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0"
-                                                            src="{{ asset('admin/images/category/' . $item->images) }}"
-                                                            alt="">
+                                                        @foreach ($item->getMedia('category') as $image)
+                                                            <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0"
+                                                                src="{{ $image->getUrl() }}" alt="image-category"
+                                                                alt="">
+                                                        @endforeach
                                                     </div>
                                                 </td>
                                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                                     <div class="flex items-center">
                                                         <button @click="editCategory({{ $item }})"
                                                             class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 mr-4 text-xs font-medium text-indigo-600 ring-1 ring-indigo-500/10 ring-inset">Edit</button>
-                                                        <button @click="showCategory({{ $item }})"
+                                                        <button
+                                                            @click="showCategory({{ json_encode($item) }}, '{{ $item->getFirstMediaUrl('category') }}');"
                                                             class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 mr-4 text-xs font-medium text-yellow-600 ring-1 ring-yellow-500/10 ring-inset">Show</button>
                                                         <form action="{{ route('category.destroy', $item->slug) }}"
                                                             method="POST">
@@ -225,207 +229,297 @@
         </div>
 
 
-    {{-- Modal Add Data --}}
-    <div x-show="addModal" x-transition:enter="transition duration-300 ease-out" x-cloak
-        x-transition:enter-start="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-        x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100"
-        x-transition:leave="transition duration-150 ease-in"
-        x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
-        x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-        class="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-30" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div @click="closeModal" class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <span class="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
+        {{-- Modal Add Data --}}
+        <div x-show="addModal" x-transition:enter="transition duration-300 ease-out" x-cloak
+            x-transition:enter-start="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100"
+            x-transition:leave="transition duration-150 ease-in"
+            x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
+            x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+            class="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-30" aria-labelledby="modal-title"
+            role="dialog" aria-modal="true">
+            <div @click="closeModal"
+                class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                <span class="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
 
-            <div @click.stop
-                class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
-                <h3 class="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white" id="modal-title">
-                    Add Category
-                </h3>
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Your new <b>Category</b> has been created. Invite your
-                    team to collaborate on this project.
-                </p>
-
-                <form class="mt-4" action="{{ route('category.store') }}" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <label for="name" class="form-label text-sm text-gray-700 dark:text-gray-200">
-                        Category Name
-                    </label>
-
-                    <label class="form-label block mt-3">
-                        <input type="text" name="name" id="name" placeholder="Input Category Name"
-                            class="form-control block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                    </label>
-
-                    <label for="description" class="text-sm text-gray-700 dark:text-gray-200">
-                        Description
-                    </label>
-
-                    <label class="block mt-3">
-                        <input type="text" name="description" id="description" placeholder="Input Description"
-                            class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                    </label>
-
-                    <label class="block mt-3">
-                        <input type="file" placeholder="Input" name="images" id="images"
-                            class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                    </label>
-
-                    <div class="mt-4 sm:flex sm:items-center sm:-mx-2">
-                        <button type="button" @click="closeModal"
-                            class="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
-                            Cancel
-                        </button>
-
-                        <button type="submit"
-                            class="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
-                            Submit Data
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    {{-- End Modal Add Data --}}
-
-    {{-- Modal Show Data --}}
-    <div x-show="showModal" x-cloak x-transition:enter="transition duration-300 ease-out" x-cloak
-        x-transition:enter-start="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-        x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100"
-        x-transition:leave="transition duration-150 ease-in"
-        x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
-        x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-        class="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div
-                class="relative inline-block p-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl sm:max-w-sm rounded-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:p-6">
-                <div class="flex items-center justify-center mx-auto">
-                    <img class="h-full rounded-lg" :src="'/admin/images/category/' + category.images">
-                </div>
-
-                <div class="mt-5 text-center">
-                    <h3 class="text-lg font-medium text-gray-800 dark:text-white"><span x-text="category.name"></span>
+                <div @click.stop
+                    class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+                    <h3 class="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
+                        id="modal-title">
+                        Add Category
                     </h3>
-
-                    <p class="mt-2 text-gray-500 dark:text-gray-400">
-                        <span x-text="category.description"></span>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        Your new <b>Category</b> has been created. Invite your
+                        team to collaborate on this project.
                     </p>
-                </div>
 
-                <div class="mt-4 sm:flex sm:items-center sm:justify-between sm:mt-6 sm:-mx-2">
-                    <button @click="closeModal"
-                        class="px-4 sm:mx-2 w-full py-2.5 text-sm font-medium dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
-                        Cancel
-                    </button>
+                    <form class="mt-4" action="{{ route('category.store') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <label for="name" class="form-label text-sm text-gray-700 dark:text-gray-200">
+                            Category Name
+                        </label>
+
+                        <label class="form-label block mt-3">
+                            <input type="text" name="name" id="name" placeholder="Input Category Name"
+                                class="form-control block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                        </label>
+
+                        <label for="description" class="text-sm text-gray-700 dark:text-gray-200">
+                            Description
+                        </label>
+
+                        <label class="block mt-3">
+                            <input type="text" name="description" id="description"
+                                placeholder="Input Description"
+                                class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                        </label>
+
+                        <label class="block mt-3">
+                            <input type="file" placeholder="Input" name="images" id="fileInput"
+                                class="hidden w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                        </label>
+
+                        <div id="uploadBox"
+                            class="flex flex-col items-center w-full max-w-lg p-5 mx-auto mt-2 text-center bg-white border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-900 dark:border-gray-700 rounded-xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor"
+                                class="w-8 h-8 text-gray-500 dark:text-gray-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                            </svg>
+
+                            <h2 class="mt-1 font-medium tracking-wide text-gray-700 dark:text-gray-200">Category
+                                Image</h2>
+
+                            <p class="mt-2 text-xs tracking-wide text-gray-500 dark:text-gray-400">
+                                Upload or drag & drop your file PNG, JPG, or GIF.
+                            </p>
+                        </div>
+
+                        <div id="previewContainer" class="relative mt-2 hidden">
+                            <img id="previewImage" src="" alt="Image Preview"
+                                class="w-full h-auto rounded-xl border border-gray-300 cursor-pointer">
+                        </div>
+
+
+
+
+                        <div class="mt-4 sm:flex sm:items-center sm:-mx-2">
+                            <button type="button" @click="closeModal"
+                                class="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
+                                Cancel
+                            </button>
+
+                            <button type="submit"
+                                class="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
+                                Submit Data
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    {{-- End Modal Show Data --}}
+        {{-- End Modal Add Data --}}
 
-    {{-- Modal Edit Data --}}
-    <div x-show="editModal" x-transition:enter="transition duration-300 ease-out" x-cloak
-        x-transition:enter-start="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-        x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100"
-        x-transition:leave="transition duration-150 ease-in"
-        x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
-        x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
-        class="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <span class="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
+        {{-- Modal Show Data --}}
+        <div x-show="showModal" x-cloak x-transition:enter="transition duration-300 ease-out" x-cloak
+            x-transition:enter-start="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100"
+            x-transition:leave="transition duration-150 ease-in"
+            x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
+            x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+            class="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+            aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
 
-            <div
-                class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
-                <h3 class="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white" id="modal-title">
-                    Edit Category
-                </h3>
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Your new <b>Category</b> has been created. Invite your
-                    team to collaborate on this project.
-                </p>
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div
+                    class="relative inline-block p-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl sm:max-w-sm rounded-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:p-6">
+                    <div class="flex items-center justify-center mx-auto">
+                        <img class="h-full rounded-lg" :src="modalImage">
+                    </div>
 
-                <form x-bind:action="'/admin' + '/category/' + category.slug" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" x-model="category.id">
-                    <label for="name" class="form-label text-sm text-gray-700 dark:text-gray-200">
-                        Category Name
-                    </label>
-                    
-                    <label class="form-label block mt-3">
-                        <input type="text" name="name" id="name" placeholder="Input Category Name"
-                            x-model="category.name"
-                            class="form-control block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                    </label>
+                    <div class="mt-5 text-center">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-white"><span
+                                x-text="category.name"></span>
+                        </h3>
 
-                    <label for="description" class="text-sm text-gray-700 dark:text-gray-200">
-                        Description
-                    </label>
+                        <p class="mt-2 text-gray-500 dark:text-gray-400">
+                            <span x-text="category.description"></span>
+                        </p>
+                    </div>
 
-                    <label class="block mt-3">
-                        <input type="text" name="description" id="description" placeholder="Input Description"
-                            x-model="category.description"
-                            class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                    </label>
-
-                    <label class="block mt-3">
-                        <input type="file" placeholder="Input" name="images" id="images"
-                            class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
-                    </label>
-
-                     <img :src="'/admin/images/category/' + category.images" class="mt-3" width="100">
-
-                    <div class="mt-4 sm:flex sm:items-center sm:-mx-2">
-                        <button type="button" @click="closeModal"
-                            class="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
+                    <div class="mt-4 sm:flex sm:items-center sm:justify-between sm:mt-6 sm:-mx-2">
+                        <button @click="closeModal"
+                            class="px-4 sm:mx-2 w-full py-2.5 text-sm font-medium dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
                             Cancel
                         </button>
-
-                        <button type="submit"
-                            class="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
-                            Submit Data
-                        </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-    {{-- End Modal Edit Data --}}
+        {{-- End Modal Show Data --}}
 
-    <script>
-        function categoryModal() {
-            return {
-                addModal: false,
-                showModal: false,
-                editModal: false,
-                category: {},
-                newCategory: {
-                    name: '',
-                    description: '',
-                    images: null,
-                },
-                showCategory(category) {
-                    this.category = category;
-                    this.showModal = true;
-                },
-                editCategory(category) {
-                    this.category = {
-                        ...category
-                    };
-                    this.editModal = true;
-                },
-                closeModal() {
-                    this.addModal = false;
-                    this.showModal = false;
-                    this.editModal = false;
-                    this.category = {};
-                },
-            };
-        }
-    </script>
+        {{-- Modal Edit Data --}}
+        <div x-show="editModal" x-transition:enter="transition duration-300 ease-out" x-cloak
+            x-transition:enter-start="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+            x-transition:enter-end="translate-y-0 opacity-100 sm:scale-100"
+            x-transition:leave="transition duration-150 ease-in"
+            x-transition:leave-start="translate-y-0 opacity-100 sm:scale-100"
+            x-transition:leave-end="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+            class="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+            aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                <span class="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
+
+                <div
+                    class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl dark:bg-gray-900 sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
+                    <h3 class="text-lg font-medium leading-6 text-gray-800 capitalize dark:text-white"
+                        id="modal-title">
+                        Edit Category
+                    </h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        Your new <b>Category</b> has been created. Invite your
+                        team to collaborate on this project.
+                    </p>
+
+                    <form x-bind:action="'/admin' + '/category/' + category.slug" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" x-model="category.id">
+                        <label for="name" class="form-label text-sm text-gray-700 dark:text-gray-200">
+                            Category Name
+                        </label>
+
+                        <label class="form-label block mt-3">
+                            <input type="text" name="name" id="name" placeholder="Input Category Name"
+                                x-model="category.name"
+                                class="form-control block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                        </label>
+
+                        <label for="description" class="text-sm text-gray-700 dark:text-gray-200">
+                            Description
+                        </label>
+
+                        <label class="block mt-3">
+                            <input type="text" name="description" id="description"
+                                placeholder="Input Description" x-model="category.description"
+                                class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+                        </label>
+
+                        <label class="block mt-3">
+                            <input type="file" placeholder="Input" name="images" id="fileInput"
+                                class="hidden w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300" />
+
+                                <div id="uploadBox"
+                                class="flex flex-col items-center w-full max-w-lg p-5 mx-auto mt-2 text-center bg-white border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-900 dark:border-gray-700 rounded-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor"
+                                class="w-8 h-8 text-gray-500 dark:text-gray-400">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                            </svg>
+
+                            <h2 class="mt-1 font-medium tracking-wide text-gray-700 dark:text-gray-200">Category
+                                Image</h2>
+
+                            <p class="mt-2 text-xs tracking-wide text-gray-500 dark:text-gray-400">
+                                Upload or drag & drop your file PNG, JPG, or GIF.
+                            </p>
+                        </div>
+
+                        <div id="previewContainer" class="relative mt-2 hidden">
+                            <img id="previewImage" src="" alt="Image Preview"
+                            class="w-full h-auto rounded-xl border border-gray-300 cursor-pointer">
+                        </div>
+
+                    </label>
+
+                        <div class="mt-4 sm:flex sm:items-center sm:-mx-2">
+                            <button type="button" @click="closeModal"
+                                class="w-full px-4 py-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:w-1/2 sm:mx-2 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40">
+                                Cancel
+                            </button>
+
+                            <button type="submit"
+                                class="w-full px-4 py-2 mt-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md sm:mt-0 sm:w-1/2 sm:mx-2 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40">
+                                Submit Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {{-- End Modal Edit Data --}}
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const fileInput = document.getElementById("fileInput");
+                const uploadBox = document.getElementById("uploadBox");
+                const previewContainer = document.getElementById("previewContainer");
+                const previewImage = document.getElementById("previewImage");
+
+                // Ketika area upload diklik, buka input file
+                uploadBox.addEventListener("click", function() {
+                    fileInput.click();
+                });
+
+                // Ketika gambar diklik, buka input file lagi
+                previewImage.addEventListener("click", function() {
+                    fileInput.click();
+                });
+
+                // Ketika file dipilih, tampilkan preview
+                fileInput.addEventListener("change", function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            previewContainer.classList.remove("hidden"); // Tampilkan gambar preview
+                            uploadBox.classList.add("hidden"); // Sembunyikan kotak upload
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        </script>
+
+        <script>
+            function categoryModal() {
+                return {
+                    addModal: false,
+                    showModal: false,
+                    editModal: false,
+                    category: {},
+                    newCategory: {
+                        name: '',
+                        description: '',
+                        images: null,
+                    },
+                    showCategory(category, image) {
+                        this.modalImage = image;
+                        this.category = category;
+                        this.showModal = true;
+                    },
+                    editCategory(category) {
+                        this.category = {
+                            ...category
+                        };
+                        this.editModal = true;
+                    },
+                    closeModal() {
+                        this.addModal = false;
+                        this.showModal = false;
+                        this.editModal = false;
+                        this.modalImage = '';
+                        this.category = {};
+                    },
+                };
+            }
+        </script>
 
     </main>
 </x-app-layout>

@@ -16,12 +16,13 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('plan_id');
             $table->decimal('amount', total: 10, places: 2);
-            $table->enum('payment_method' ,['Dana', 'Gopay']);
+            $table->string('payment_method');
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
             $table->dateTime('transaction_date');
-            $table->string('reference_number');
+            $table->string('reference_number')->nullable();
             $table->dateTime('subscription_start');
             $table->dateTime('subscription_end');
+            $table->integer('downloads_used')->default(0);
             $table->timestamps();
 
             // ini foreign wak

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\PremiumPayment;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionFeature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionPlanController extends Controller
 {
@@ -19,6 +20,52 @@ class SubscriptionPlanController extends Controller
         return view('admin.premium.index', compact('plans'));
     }
 
+    public function showPlans()
+    {
+        $user = Auth::user();
+        $plans = SubscriptionPlan::with('features')->get();
+        return view('user.subscription.index', compact('plans', 'user'));
+    }
+
+    // Controller
+    public function checkout(Request $request)
+    {
+        $user = Auth::user();
+        $plan = SubscriptionPlan::findOrFail($request->plan);
+        return view('user.subscription.checkout', compact('plan', 'user'));
+    }
+    // Controller
+    public function pay(Request $request)
+    {
+        $validated = $request->validate([
+            'amount' => 'nullable',
+            'reference_number' => 'nullable',
+        ]);
+
+        // dd($request->all());
+        $plan = SubscriptionPlan::findOrFail($request->plan_id);
+
+        PremiumPayment::create([
+            'user_id' => Auth::id(),
+            'plan_id' => $plan->id,
+            'amount' => $plan->price * 1.11,
+            'payment_method' => $request->payment_method,
+            'status' => 'completed', // Atur nanti jika integrasi ke Tripay/Midtrans
+            'transaction_date' => now(),
+            'subscription_start' => now(),
+            'subscription_end' => now()->addMonths($plan->duration),
+        ]);
+
+        return redirect()->route('welcome')->with('success', 'Selamat! Kamu sekarang user premium.');
+    }
+
+    public function history()
+    {
+        $user = Auth::user();
+        $payments = Auth::user()->premiumPayments()->with('plan')->latest()->get();
+
+        return view('user.subscription.history', compact('payments', 'user'));
+    }
     /**
      * Show the form for creating a new resource.
      */

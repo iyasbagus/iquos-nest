@@ -12,7 +12,24 @@ class AssetController extends Controller
 {
     public function indexAssets()
     {
-        return response()->json(Asset::all(), 200);
+        $assets = Asset::with(['creator', 'media'])->get();
+
+        $data = $assets->map(function ($asset) {
+            $media = $asset->getFirstMedia('images');
+            return [
+                'id' => $asset->id,
+                'title' => $asset->title,
+                'file_name' => $media ? $media->file_name : null,
+                'description' => $asset->description,
+                'image_url' => $media ? $media->getUrl() : null, // <--- ini kuncinya
+                'creator' => [
+                    'id' => $asset->creator->id,
+                    'name' => $asset->creator->name,
+                ],
+            ];
+        });
+
+        return response()->json($data);
     }
 
     public function store(Request $request)
@@ -45,15 +62,29 @@ class AssetController extends Controller
         return response()->json(['message' => 'Asset uploaded successfully', 'data' => $asset], 201);
     }
 
-
     public function serveFile($id)
-{
-    $asset = Asset::findOrFail($id);
+    {
+        $asset = Asset::findOrFail($id);
 
-    if (!Storage::exists($asset->file_url)) {
-        return response()->json(['message' => 'File not found'], 404);
+        if (!Storage::exists($asset->file_url)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        return response()->file(storage_path('app/' . $asset->file_url));
     }
 
-    return response()->file(storage_path('app/' . $asset->file_url));
-}
+    public function showAssets($id)
+    {
+        $asset = Asset::with(['category', 'tags', 'media'])->findOrFail($id);
+
+        return response()->json([
+            'id' => $asset->id,
+            'title' => $asset->title,
+            'description' => $asset->description,
+            'category' => $asset->category,
+            'tags' => $asset->tags,
+            'image_url' => $asset->getFirstMediaUrl('images'),
+            'download_url' => $asset->getFirstMediaUrl('assets'), // opsional
+        ]);
+    }
 }

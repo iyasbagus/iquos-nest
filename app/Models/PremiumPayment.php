@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use app\Models\User;
-use app\Models\SubscriptionPlan;
+use App\Models\User;
+use App\Models\SubscriptionPlan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PremiumPayment extends Model

@@ -9,51 +9,53 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class CategoryController extends Controller
 {
     public function index()
     {
         $category = Category::all();
-
+    
         $categoryTotal = Category::count();
 
         return view('admin.category.index', compact('category', 'categoryTotal'));
     }
-
 
     public function create()
     {
         return view();
     }
 
-
     public function store(Request $request)
     {
-         $validated = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|unique:categories,name|max:255',
             'description' => 'required',
-            'images' => 'required|image|mimes:jpg,jpeg,png,gif'
+            'images' => 'required|image|mimes:jpg,jpeg,png,gif',
         ]);
 
         $category = new Category();
         $category->name = $request->name;
         $category->slug = Str::slug($request->name);
         $category->description = $request->description;
-
-        if ($request->hasFile('images')) {
-            $img = $request->file('images');
-            $name = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
-            $img->move('admin/images/category/', $name);
-            $category->images = $name;
-        }
-
         $category->save();
 
-        return redirect()->route('category.index')
-            ->with('success', 'data berhasil ditambahkan');
-    }
+        if ($request->hasFile('images')) {
+            $image = $request->file('images');
+            $imageName = now()->timestamp . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
 
+            $media = $category->addMedia($image)->usingFileName($imageName)->toMediaCollection('category', 'public');
+
+            // 🔹 Simpan ukuran asli gambar
+            $imagePath = $media->getPath();
+            $img = Image::make($imagePath);
+
+            $media->save(); // Simpan perubahan properti
+        }
+
+        return redirect()->route('category.index')->with('success', 'data berhasil ditambahkan');
+    }
 
     // public function show($slug)
     // {
@@ -61,17 +63,14 @@ class CategoryController extends Controller
     //     return view('admin.category.show', compact('category'));
     // }
 
-
     public function edit($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
         return view('admin.category.edit', compact('category'));
     }
 
-
     public function update(Request $request, $slug)
     {
-
         $validated = $request->validate([
             'name' => 'required|unique:categories,name,' . $slug . ',slug',
             'description' => 'required',
@@ -83,39 +82,32 @@ class CategoryController extends Controller
         $category->name = $request->name;
         $category->slug = Str::slug($request->name);
         $category->description = $request->description;
+        $category->save();
 
         if ($request->hasFile('images')) {
-            // hapus gambar ya kalo ada
-            if ($category->images && file_exists(public_path('admin/images/category/' . $category->images))) {
-                unlink(public_path('admin/images/category/'. $category->images));
-            }
+            // 🔸 Hapus media lama terlebih dahulu
+            $category->clearMediaCollection('category');
 
-            // upload gambar baru
-            $img = $request->file('images');
-            $imgname = time() . '-' . uniqid() . '.' . $img->getClientOriginalExtension();
-            $img->move(public_path('admin/images/category/'), $imgname);
-            $category->images = $imgname;
+            $image = $request->file('images');
+            $imageName = now()->timestamp . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+            $media = $category->addMedia($image)->usingFileName($imageName)->toMediaCollection('category', 'public');
+
+            // 🔹 Simpan ukuran asli gambar
+            $imagePath = $media->getPath();
+            $img = Image::make($imagePath);
+
+            $media->save(); // Simpan perubahan properti
         }
 
-        // if ($request->hasFile('images')) {
-        //     $category->deleteImage();
-        //     $img = $request->file('images');
-        //     $name = rand(1000, 9999) . $img->getClientOriginalName();
-        //     $img->move('admin/images/category/', $name);
-        //     $category->images = $name;
-        // }
-
-        $category->save();
-        return redirect()->route('category.index')
-            ->with('success', 'data berhasil di edit');
+        return redirect()->route('category.index')->with('success', 'data berhasil di edit');
     }
-
 
     public function destroy($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
-        if(!$category) {
+        if (!$category) {
             return redirect()->back()->with('error', 'Category Not Found');
         }
 
@@ -126,7 +118,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect()->route('category.index')
-            ->with('success', 'data berhasil dihapus');
+        return redirect()->route('category.index')->with('success', 'data berhasil dihapus');
     }
 }

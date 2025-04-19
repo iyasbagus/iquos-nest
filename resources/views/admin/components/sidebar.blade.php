@@ -74,9 +74,16 @@
                     <span class="mx-2 text-sm font-medium">User Accounts</span>
                 </a>
 
+                <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
+                    href="{{route('creator-applications.index')}}">
+                    <i class="material-icons-outlined">workspace_premium</i>
+
+                    <span class="mx-2 text-sm font-medium">Creator Applications</span>
+                </a>
+
                  <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
                     href="{{route('subscription.index')}}">
-                    <i class="material-icons-outlined">workspace_premium</i>
+                    <i class="material-icons-outlined">subscriptions</i>
 
                     <span class="mx-2 text-sm font-medium">Premium Features</span>
                 </a>

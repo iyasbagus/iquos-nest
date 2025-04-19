@@ -3,42 +3,37 @@
 namespace App\Models;
 
 use App\Models\Asset;
+use App\Models\CreatorApplication;
 use App\Models\PremiumPayment;
+use App\Models\SubscriptionPlan;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasRoles ,HasFactory, Notifiable, HasApiTokens;
+    use HasRoles, HasFactory, Notifiable, HasApiTokens, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'profile_picture',
-        'premium_untill',
-    ];
+    protected $fillable = ['name', 'username','email', 'password', 'profile_picture', 'bio'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * Get the attributes that should be cast.
@@ -53,9 +48,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('profile_picture')->singleFile(); // hanya simpan 1 gambar, akan replace otomatis
+
+        $this->addMediaCollection('banner_image')->singleFile();
+    }
+
     public function asset()
     {
         return $this->hasMany(Asset::class, 'creator_id');
+    }
+
+    public function creatorApplication()
+    {
+        return $this->hasOne(CreatorApplication::class);
     }
 
     public function premiumPayments()
@@ -63,15 +70,23 @@ class User extends Authenticatable
         return $this->hasMany(PremiumPayment::class, 'user_id');
     }
 
-    public function activeSubscription()
+    public function dailyDownloads()
     {
-        return $this->hasOne(PremiumPayment::class)
-        ->where('status', 'completed')
-        ->where('subcsription_end', '>' , now());
+        return $this->hasMany(DailyDownload::class, 'user_id');
+    }
+
+    public function latestActivePremium()
+    {
+        return $this->hasOne(PremiumPayment::class, 'user_id')->where('status', 'completed')->where('subscription_end', '>=', now())->latest('subscription_end');
     }
 
     public function isPremium()
     {
-        return $this->premium_until && $this->premium_until > now();
+        return $this->latestActivePremium()->exists();
+    }
+
+    public function getProfilePictureAttribute()
+    {
+        return $this->getFirstMediaUrl('profile_picture') ?: \App\Helpers\AvatarHelper::generateAvatar($this->name);
     }
 }

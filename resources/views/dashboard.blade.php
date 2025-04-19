@@ -5,32 +5,32 @@
         </h2>
     </x-slot>
 
-    <div class="stats shadow">
+    <div class="stats shadow bg-white">
   <div class="stat">
     <div class="stat-figure text-primary">
       <span class="material-icons-outlined">category</span>
     </div>
-    <div class="stat-title">Category Total</div>
-    <div class="stat-value">{{$categoryTotal}}</div>
-    <div class="stat-desc">Jan 1st - Feb 1st</div>
+    <div class="stat-title text-gray-700">Creator Application</div>
+    <div class="stat-value text-gray-700">{{$applicationTotal}}</div>
+    <div class="stat-desc text-gray-700">↗︎ {{$applicationTotalToday}} Application Today</div>
   </div>
 
   <div class="stat">
     <div class="stat-figure text-primary">
      <span class="material-icons-outlined">web_asset</span>
     </div>
-    <div class="stat-title">Asset Total</div>
-    <div class="stat-value">{{$assetTotalActive}}</div>
-    <div class="stat-desc">↗︎ {{$assetToday}} Assets Today</div>
+    <div class="stat-title text-gray-700">Asset Total</div>
+    <div class="stat-value text-gray-700">{{$assetTotalActive}}</div>
+    <div class="stat-desc text-gray-700">↗︎ {{$assetToday}} Assets Today</div>
   </div>
 
   <div class="stat">
     <div class="stat-figure text-primary">
         <span class="material-icons-outlined">account_circle</span>
     </div>
-    <div class="stat-title">User Total</div>
-    <div class="stat-value">{{$userTotal}}</div>
-    <div class="stat-desc">↗︎ {{$userTodayRegister}} Register Today</div>
+    <div class="stat-title text-gray-700">User Total</div>
+    <div class="stat-value text-gray-700">{{$userTotal}}</div>
+    <div class="stat-desc text-gray-700">↗︎ {{$userTodayRegister}} Register Today</div>
   </div>
 </div>
 </x-app-layout>

@@ -10,12 +10,16 @@ use App\Models\Category;
 use App\Models\Asset;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ExploreController extends Controller
 {
+    use AuthorizesRequests;
+
     public function listAssetView()
     {
         $user = Auth::user();
@@ -37,6 +41,13 @@ class ExploreController extends Controller
 
         if (!$media) {
             return abort(404, 'Media not found');
+        }
+
+        $asset = \App\Models\Asset::find($modelId);
+
+        // Cek model asset-nya
+        if (!$asset) {
+            return abort(404, 'Aset tidak ditemukan.');
         }
 
         // Pilih path sesuai ukuran
@@ -62,18 +73,52 @@ class ExploreController extends Controller
 
     public function downloadAssetFileById(Request $request)
     {
+        $user = Auth::user();
+        \Log::info('User ID:', ['id' => $user->id]);
         $modelId = $request->query('modelId');
         $collectionName = $request->query('collection');
 
-        // Cari media berdasarkan model_id dan collection_name
-        $media = Media::where('model_id', $modelId)->where('collection_name', $collectionName)->first();
+        $asset = Asset::findOrFail($modelId);
 
-        if (!$media) {
-            return abort(404, 'Media not found');
+        // Premium user? Langsung boleh
+        if ($user->isPremium()) {
+            return $this->downloadMedia($asset, $collectionName);
         }
 
-        $path = $media->getPath();
+        // Kalau asset-nya premium → blok user free
+        if ($asset->is_premium_only) {
+            return back()->with('error', 'Hanya user premium yang bisa mendownload asset ini.');
+        }
 
-        return response()->download($path, $media->file_name);
+        // Cek record harian
+        $today = now()->toDateString();
+        $record = \App\Models\DailyDownload::firstOrCreate(['user_id' => $user->id, 'date' => $today], ['free_asset_ids' => json_encode([])]);
+
+        $freeAssets = collect(json_decode($record->free_asset_ids, true));
+
+        // Sudah download asset ini?
+        if (!$freeAssets->contains($asset->id)) {
+            if ($freeAssets->count() >= 10) {
+                return back()->with('error', 'Kamu sudah mencapai batas download 10 asset hari ini.');
+            }
+
+            // Tambahkan asset ke list
+            $freeAssets->push($asset->id);
+            $record->update([
+                'free_asset_ids' => $freeAssets->unique()->values()->toJson(),
+            ]);
+        }
+
+        return $this->downloadMedia($asset, $collectionName);
+    }
+
+    private function downloadMedia($asset, $collection)
+    {
+        $media = $asset->getMedia($collection)->first();
+        if (!$media) {
+            abort(404, 'Media tidak ditemukan');
+        }
+
+        return response()->download($media->getPath(), $media->file_name);
     }
 }

@@ -72,8 +72,8 @@
                 <div>
                     <label for="is_premium_only" class="block text-gray-700 font-semibold">Premium</label>
                     <select name="is_premium_only" id="is_premium_only" class="w-full mt-1 p-2 border rounded-lg">
-                        <option value="1">Free</option>
-                        <option value="0">Premium</option>
+                        <option value="0">Free</option>
+                        <option value="1">Premium</option>
                     </select>
                 </div>
 

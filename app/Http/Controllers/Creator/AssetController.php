@@ -45,7 +45,7 @@ class AssetController extends Controller
         $asset->title = $request->title;
         $asset->description = $request->description;
         $asset->creator_id = Auth::id();
-        $asset->is_premium_only = $request->is_premium_only ?? 0;
+        $asset->is_premium_only = $request->is_premium_only ?? 1;
         $asset->downloads = $request->downloads ?? 0;
         $asset->rating = $request->rating ?? 0;
         $asset->status = $request->status ?? 'pending';

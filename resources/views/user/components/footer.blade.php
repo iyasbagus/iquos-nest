@@ -1,29 +1,5 @@
 <footer class="bg-white dark:bg-gray-900">
   <div class="mx-auto max-w-screen-xl px-4 pt-16 pb-8 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-md">
-      <strong class="block text-center text-xl font-bold text-gray-900 sm:text-3xl dark:text-white">
-        Want us to email you with the latest IQUOS Nest?
-      </strong>
-
-      <form class="mt-6">
-        <div class="relative max-w-lg">
-          <label class="sr-only" for="email"> Email </label>
-
-          <input
-            class="w-full rounded-full border-gray-200 bg-gray-100 p-4 pe-32 text-sm font-medium dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-            id="email"
-            type="email"
-            placeholder="john@doe.com"
-          />
-
-          <button
-            class="absolute end-1 top-1/2 -translate-y-1/2 rounded-full bg-purple-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-purple-700"
-          >
-            Send
-          </button>
-        </div>
-      </form>
-    </div>
 
     <div class="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-32">
       <div class="mx-auto max-w-sm lg:max-w-none">

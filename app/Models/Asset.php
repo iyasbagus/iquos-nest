@@ -30,7 +30,7 @@ class Asset extends Model implements HasMedia
 
         $this->addMediaCollection('images')->useDisk('public');
     }
-
+    
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('large')->width(1000)->height(1000)->sharpen(10)->nonQueued(); // Tambahkan ini jika ingin langsung dibuat saat upload

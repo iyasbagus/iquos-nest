@@ -100,7 +100,7 @@
                                                     <div class="flex items-center">
                                                         @foreach ($item->getMedia('images') as $image)
                                                         <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0"
-                                                            src="{{ $image->getUrl() }}" alt="palah">
+                                                            src="{{ $image->getUrl() }}" alt="gambar">
                                                         @endforeach
                                                     </div>
                                                 </td>
@@ -115,7 +115,7 @@
                                                         class="inline px-3 py-1 text-sm font-normal
                                                             {{ $item->is_premium_only ? 'text-yellow-600 bg-yellow-100' : 'text-green-600 bg-green-100' }}
                                                             rounded-full dark:text-gray-400 gap-x-2 dark:bg-gray-800">
-                                                        {{ $item->is_premium_only ? 'Free' : 'Premium' }}
+                                                        {{ $item->is_premium_only ? 'Premium' : 'Free' }}
                                                     </div>
                                                 </td>
                                                 <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">

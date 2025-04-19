@@ -123,7 +123,7 @@
                                                         class="inline px-3 py-1 text-sm font-normal
                                                             {{ $item->is_premium_only ? 'text-yellow-600 bg-yellow-100' : 'text-green-600 bg-green-100' }}
                                                             rounded-full dark:text-gray-400 gap-x-2 dark:bg-gray-800">
-                                                        {{ $item->is_premium_only ? 'Free' : 'Premium' }}
+                                                        {{ $item->is_premium_only ? 'Premium' : 'Free' }}
                                                     </div>
                                                 </td>
                                                 <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">

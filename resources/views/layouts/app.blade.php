@@ -17,7 +17,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1a/dist/aos.css" rel="stylesheet">
 
 
     <style>
@@ -30,7 +30,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
+<body class="h-screen font-sans antialiased">
     <div class="flex min-h-screen bg-gray-100">
         <!-- Sidebar di Kiri -->
         <div class="fixed top-0 left-0 w-64 h-screen bg-white shadow-lg">
@@ -61,9 +61,12 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
         AOS.init();
+
+        lucide.createIcons(); // auto replace all <i data-lucide="icon-name"></i>
     </script>
 
     <script>
