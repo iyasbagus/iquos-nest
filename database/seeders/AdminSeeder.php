@@ -25,7 +25,7 @@ class AdminSeeder extends Seeder
             ]);
 
             // Memberikan role admin ke akun ini
-            $admin->assignRole('admin');  // Pastikan role 'admin' sudah ada
+            $admin->assignRole('admin', 'creator');  // Pastikan role 'admin' sudah ada
         }
     }
 }

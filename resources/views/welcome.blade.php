@@ -1,12 +1,12 @@
   @extends('layouts.user')
 
   @section('usercontent')
-      <div class="">
+      <div class="pt-9">
           <!-- Hero Section -->
           <div class="container mx-auto px-4 md:px-6 py-12 flex flex-col md:flex-row items-center justify-between">
               <!-- Left Content -->
               <div class="md:w-1/2 mb-10 md:mb-0">
-                  <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                  <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight dark:text-white">
                       Discover <span class="gradient-text">
                           Premium<br>
                           Assets
@@ -15,14 +15,14 @@
                       Project
                   </h1>
 
-                  <p class="mt-6 text-gray-600">
+                  <p class="mt-6 text-gray-600 dark:text-white">
                       IQUOS Nest is your go-to platform for high-quality digital assets <br>
                       and a creative community to fuel your <span class="font-semibold"> projects.</span>
                   </p>
 
                   <div class="mt-8">
                       <button
-                          class="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition duration-300">
+                          class="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition duration-300 dark:bg-gray-800 dark:hover:bg-gray-700">
                           EXPLORE NOW
                       </button>
                   </div>
@@ -30,20 +30,22 @@
                   <div class="mt-8">
                       <p class="text-sm text-gray-500 mb-2">Join our community</p>
                       <div class="flex -space-x-2">
-                          @foreach ($allUser as $item)
-                          <img class="object-cover inline-block h-10 w-10 rounded-full ring-2 ring-white"
-                          src="{{ $item->profile_picture ?? \App\Helpers\AvatarHelper::generateAvatar($item->name) }}" alt="User avatar">
+                          @foreach ($creator as $item)
+                              <img class="object-cover inline-block h-10 w-10 rounded-full ring-2 ring-white"
+                                  src="{{ $item->profile_picture ?? \App\Helpers\AvatarHelper::generateAvatar($item->name) }}"
+                                  alt="User avatar">
                           @endforeach
-                        </div>
+                      </div>
                       <p class="text-xs text-gray-500 mt-2">We're waiting for you</p>
                   </div>
               </div>
 
               <!-- Right Content - Card Image -->
-              <div id="lottie-animation" class="md:w-1/2 relative">
+              <div class="md:w-1/2 relative">
                   <div class="relative">
-                      <img src="{{ asset('images/Animation - 1744986729937.gif') }}" alt="Custom Card Skin"
-                          class="rounded-2xl mx-auto w-full h-ful">
+                      {{-- <img src="{{ asset('images/iquos_nest_animation.gif') }}" alt="Custom Card Skin"
+                          class="rounded-2xl mx-auto w-full h-ful"> --}}
+                      <div class="mx-auto w-full h-full" id="lottie-1"></div>
                   </div>
               </div>
           </div>
@@ -57,27 +59,29 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <!-- Pack 1 -->
-                  <div class="bg-gray-100 p-6 rounded-xl">
-                      <div class="bg-black text-white p-2 rounded-lg w-10 h-10 flex items-center justify-center mb-4">
+                  <div class="bg-gray-100 p-6 rounded-xl dark:bg-gray-800">
+                      <div
+                          class="bg-black text-white p-2 rounded-lg w-10 h-10 flex items-center justify-center mb-4 dark:bg-gray-700">
                           <span>1</span>
                       </div>
                       <h3 class="font-bold text-xl mb-2">Premium Assets</h3>
-                      <p class="text-gray-600">The best asset you will ever find.</p>
+                      <p class="text-gray-600 dark:text-gray-500">The best asset you will ever find.</p>
                   </div>
 
                   <!-- Pack 2 -->
-                  <div class="bg-gray-100 p-6 rounded-xl">
-                      <div class="bg-black text-white p-2 rounded-lg w-10 h-10 flex items-center justify-center mb-4">
+                  <div class="bg-gray-100 p-6 rounded-xl dark:bg-gray-800">
+                      <div
+                          class="bg-black text-white p-2 rounded-lg w-10 h-10 flex items-center justify-center mb-4 dark:bg-gray-700">
                           <span>2</span>
                       </div>
                       <h3 class="font-bold text-xl mb-2">Best Creator</h3>
-                      <p class="text-gray-600">The big advantage of being a creator.</p>
+                      <p class="text-gray-600 dark:text-gray-500">The big advantage of being a creator.</p>
                   </div>
               </div>
           </div>
 
           <!-- Popular Pro Stocks Section -->
-          <div class="bg-gray-900 py-16 px-4 md:px-6">
+          <div class="bg-gray-900 py-16 px-4 md:px-6 dark:bg-gray-800">
               <div class="container mx-auto">
                   <h2 class="text-2xl md:text-3xl font-bold text-white mb-8 text-center">POPULER ASSETS DESIGN</h2>
                   <p class="text-gray-400 text-center mb-8 max-w-xl mx-auto">
@@ -86,11 +90,11 @@
 
                   <!-- Search Bar -->
                   <div class="max-w-xl mx-auto mb-8 flex items-center">
-                      <div class="flex bg-gray-800 rounded-full overflow-hidden w-full">
-                          <button class="bg-gray-800 text-white px-4 py-2 rounded-l-full">All</button>
+                      <div class="flex bg-gray-800 rounded-full overflow-hidden w-full dark:bg-gray-700">
+                          <button class="bg-gray-800 text-white px-4 py-2 rounded-l-full dark:bg-gray-700">All</button>
                           <input type="text" placeholder="Search design"
-                              class="bg-gray-800 text-white px-4 py-2 flex-grow focus:outline-none">
-                          <button class="bg-gray-800 text-white px-4 py-2 rounded-r-full">
+                              class="bg-gray-800 text-white px-4 py-2 flex-grow focus:outline-none dark:bg-gray-700">
+                          <button class="bg-gray-800 text-white px-4 py-2 rounded-r-full dark:bg-gray-700">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                   stroke="currentColor">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -113,19 +117,19 @@
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <!-- Card 1 -->
                       @foreach ($category as $item)
-
-                      <div class="bg-gray-800 rounded-xl overflow-hidden">
-                        @foreach ($item->getMedia('category') as $image)
-                        <img src="{{ $image->getUrl() }}" alt="Hypercritical Face"
-                        class="w-full h-48 object-cover">
-                        @endforeach
-                          <div class="p-4">
-                              <h3 class="text-white font-medium text-lg mb-4">{{$item->name}}</h3>
-                              <button
-                              class="bg-transparent border border-white text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-gray-900 transition duration-300">Search Now</button>
-                            </div>
-                        </div>
-                        @endforeach
+                          <div class="bg-gray-800 rounded-xl overflow-hidden dark:bg-gray-700">
+                              @foreach ($item->getMedia('category') as $image)
+                                  <img src="{{ $image->getUrl() }}" alt="Hypercritical Face"
+                                      class="w-full h-48 object-cover">
+                              @endforeach
+                              <div class="p-4">
+                                  <h3 class="text-white font-medium text-lg mb-4">{{ $item->name }}</h3>
+                                  <button
+                                      class="bg-transparent border border-white text-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-gray-900 transition duration-300">Search
+                                      Now</button>
+                              </div>
+                          </div>
+                      @endforeach
                   </div>
 
                   <!-- See More Button -->
@@ -142,7 +146,8 @@
           <div class="container mx-auto px-4 md:px-6 py-16 flex flex-col md:flex-row items-center">
               <!-- Left - Images -->
               <div class="md:w-1/2 mb-10 md:mb-0 relative">
-                  <img src="https://via.placeholder.com/500x300" alt="Card Skin Layers" class="mx-auto">
+                  {{-- <img src="{{ asset('images/premium_animation.gif') }}" alt="Card Skin Layers" class="mx-auto"> --}}
+                  <div class="mx-auto" id="lottie-2"></div>
               </div>
 
               <!-- Right - Content -->
@@ -151,7 +156,7 @@
                       AFFORDABLE SUBSCRIPTION PRICES<br>
                       ONLY AT IQUOS NEST.
                   </h2>
-                  <p class="text-gray-600 mb-6">
+                  <p class="text-gray-600 mb-6 dark:text-gray-400">
                       not only cheap, but can provide the best experience <br> in downloading assets
                   </p>
 
@@ -194,7 +199,7 @@
                   <div class="mt-8">
                       <button
                           class="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition duration-300">
-                          <a href="{{route('subscription.premium')}}">
+                          <a href="{{ route('subscription.premium') }}">
                               GET STARTED
                           </a>
                       </button>
@@ -203,7 +208,7 @@
           </div>
 
           <!-- Testimonials Section -->
-          <div class="bg-gray-900 py-16 px-4 md:px-6">
+          <div class="bg-gray-900 py-16 px-4 md:px-6 dark:bg-gray-800">
               <div class="container mx-auto">
                   <h2 class="text-2xl md:text-3xl font-bold text-white mb-12 text-center">
                       SEE WHAT OUR USER<br>
@@ -212,7 +217,7 @@
 
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <!-- Testimonial 1 -->
-                      <div class="bg-gray-800 p-6 rounded-xl">
+                      <div class="bg-gray-800 p-6 rounded-xl dark:bg-gray-700">
                           <div class="flex text-yellow-400 mb-3">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                   fill="currentColor">
@@ -253,7 +258,7 @@
                       </div>
 
                       <!-- Testimonial 2 -->
-                      <div class="bg-gray-800 p-6 rounded-xl">
+                      <div class="bg-gray-800 p-6 rounded-xl dark:bg-gray-700">
                           <div class="flex text-yellow-400 mb-3">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                   fill="currentColor">
@@ -319,63 +324,238 @@
                       BE OUR RESELLER AND<br>
                       GET MANY BENEFITS
                   </h2>
-                  <p class="text-gray-600 mb-8">
+                  <p class="text-gray-600 mb-8 dark:text-gray-400">
                       By being high quality vinyl, we have several reseller advantages<br>
                       that other competitors do not have.
                   </p>
 
                   <button
-                      class="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition duration-300">
-                      ORDER SKIN
+                      class="bg-black text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition duration-300 dark:bg-gray-700">
+                      JOIN CREATOR
                   </button>
               </div>
 
               <!-- Right Image -->
               <div class="md:w-1/2">
-                  <img src="https://via.placeholder.com/500x300" alt="Card Skin with Yellow Elements"
-                      class="rounded-xl shadow-lg mx-auto">
+                  {{-- <img src="{{ asset('images/creator.gif') }}" alt="Card Skin with Yellow Elements"
+                      class="rounded-xl mx-auto"> --}}
+                  <div class="mx-auto" id="lottie-3"></div>
               </div>
           </div>
 
-          <!-- Footer -->
-          <footer class="bg-gray-900 text-white py-8 px-4 md:px-6">
-              <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-                  <div class="mb-4 md:mb-0">
-                      <h3 class="font-bold text-xl">SKINNY.</h3>
-                      <p class="text-sm text-gray-400">Best Card Skin Ever</p>
-                  </div>
-
-                  <div class="flex space-x-4">
-                      <a href="#" class="text-white hover:text-gray-300">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
-                              viewBox="0 0 24 24">
-                              <path
-                                  d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                          </svg>
-                      </a>
-                      <a href="#" class="text-white hover:text-gray-300">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
-                              viewBox="0 0 24 24">
-                              <path
-                                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                          </svg>
-                      </a>
-                      <a href="#" class="text-white hover:text-gray-300">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
-                              viewBox="0 0 24 24">
-                              <path
-                                  d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-                          </svg>
-                      </a>
-                  </div>
-              </div>
-          </footer>
-
-          <button x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
+          {{-- <button x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
               @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode); darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
               class="fixed bottom-10 right-10 size-16 p-2 bg-gray-200 dark:bg-gray-800 rounded-full">
               <span x-show="!darkMode" class="material-icons-outlined">light_mode</span>
               <span x-show="darkMode" class="material-icons-outlined">dark_mode</span>
-          </button>
+          </button> --}}
+
+          <!-- Add this at the end of your content, just before the closing </div> tag -->
+          {{-- @if ($user->isPremium())
+
+          @else --}}
+          @if (!optional(Auth::user())->isPremium())
+              <div id="subscription-modal"
+                  class="fixed inset-x-0 bottom-0 transform translate-y-full transition-transform duration-300 ease-in-out z-50">
+                  <div class="bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg p-6 max-w-7xl mx-auto">
+                      <!-- Modal Header with Close Button -->
+                      <div class="flex justify-between items-center mb-6">
+                          <h3 class="text-xl font-bold text-gray-900 dark:text-white">Exclusive Subscription Packages</h3>
+                          <button id="close-modal"
+                              class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                  stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                          </button>
+                      </div>
+
+
+                      <!-- Subscription Packages Grid -->
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                          <!-- Basic Package -->
+                          @guest
+                              <div
+                                  class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-lg transition duration-300">
+                                  <div class="flex justify-between items-start mb-4">
+                                      <div>
+                                          <h4 class="text-lg font-bold text-gray-900 dark:text-white">Free</h4>
+                                          <p class="text-sm text-gray-500 dark:text-gray-400">Features are limited</p>
+                                      </div>
+                                      <span
+                                          class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Popular</span>
+                                  </div>
+                                  <div class="mb-4">
+                                      <span class="text-3xl font-bold text-gray-900 dark:text-white">Rp.0,00</span>
+                                      <span class="text-gray-500 dark:text-gray-400">/month</span>
+                                  </div>
+                                  <ul class="space-y-3 mb-6">
+                                      <li class="flex items-center">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500"
+                                              viewBox="0 0 20 20" fill="currentColor">
+                                              <path fill-rule="evenodd"
+                                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                  clip-rule="evenodd" />
+                                          </svg>
+                                          <span class="ml-2 text-gray-600 dark:text-gray-300">10 Downloads/day</span>
+                                      </li>
+                                      <li class="flex items-center">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500"
+                                              viewBox="0 0 20 20" fill="currentColor">
+                                              <path fill-rule="evenodd"
+                                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                  clip-rule="evenodd" />
+                                          </svg>
+                                          <span class="ml-2 text-gray-600 dark:text-gray-300">Basic asset access</span>
+                                      </li>
+                                      <li class="flex items-center">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500"
+                                              viewBox="0 0 20 20" fill="currentColor">
+                                              <path fill-rule="evenodd"
+                                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                  clip-rule="evenodd" />
+                                          </svg>
+                                          <span class="ml-2 text-gray-600 dark:text-gray-300">Email support</span>
+                                      </li>
+                                  </ul>
+                                  <a href="{{ route('register') }}">
+                                      <button
+                                          class="w-full py-2 px-4 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition duration-300">
+                                          Get Started
+                                      </button>
+                                  </a>
+                              </div>
+                          @endguest
+
+
+                          @foreach ($plans as $subscription)
+                              <div
+                                  class="{{ $subscription->id === 1 ? 'border-2 border-purple-500' : 'border border-gray-200 dark:border-gray-700' }} rounded-xl p-6 relative hover:shadow-lg transition duration-300">
+
+                                  {{-- BEST VALUE Badge --}}
+                                  @if ($subscription->id === 1)
+                                      <div
+                                          class="absolute -top-3 right-5 bg-purple-500 text-white text-xs px-3 py-1 rounded-full">
+                                          BEST VALUE
+                                      </div>
+                                  @endif
+
+                                  <div class="flex justify-between items-start mb-4">
+                                      <div>
+                                          <h4 class="text-lg font-bold text-gray-900 dark:text-white">
+                                              {{ $subscription->name }}</h4>
+                                          <p class="text-sm text-gray-500 dark:text-gray-400">
+                                              {{ $subscription->description }}</p>
+                                      </div>
+                                  </div>
+                                  <div class="mb-4">
+                                      <span
+                                          class="text-3xl font-bold text-gray-900 dark:text-white">Rp{{ number_format($subscription->price) }}</span>
+                                      <span class="text-gray-500 dark:text-gray-400">/month</span>
+                                  </div>
+
+                                  {{-- features list --}}
+                                  <ul class="space-y-3 mb-6">
+                                      @foreach ($subscription->features as $feature)
+                                          <li class="flex items-center">
+                                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500"
+                                                  viewBox="0 0 20 20" fill="currentColor">
+                                                  <path fill-rule="evenodd"
+                                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                      clip-rule="evenodd" />
+                                              </svg>
+                                              <span
+                                                  class="ml-2 text-gray-600 dark:text-gray-300">{{ $feature->feature }}</span>
+                                          </li>
+                                      @endforeach
+                                  </ul>
+
+                                  <button
+                                      class="w-full py-2 px-4 {{ $subscription->id === 1 ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-800 hover:bg-gray-900' }} text-white font-medium rounded-lg transition duration-300">
+                                      {{ $subscription->id === 1 ? 'Subscribe Now' : 'Go Pro' }}
+                                  </button>
+                              </div>
+                          @endforeach
+
+                      </div>
+
+                      <div class="text-center text-gray-500 dark:text-gray-400">
+                          <p class="text-sm">Limited time offer: Get 20% off any annual subscription with code <span
+                                  class="font-semibold">IQUOS2025</span></p>
+                      </div>
+                  </div>
+              </div>
+          @endif
+          {{-- @endif --}}
+
+          <!-- Add this JavaScript at the end of your content, just before the closing </body> tag -->
+          <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                  // Show modal after a short delay when page loads
+                  setTimeout(function() {
+                      const modal = document.getElementById('subscription-modal');
+                      if (modal) {
+                          modal.classList.remove('translate-y-full');
+                      }
+                  }, 1500); // 1.5 seconds delay
+
+                  // Close modal when clicking close button
+                  const closeButton = document.getElementById('close-modal');
+                  if (closeButton) {
+                      closeButton.addEventListener('click', function() {
+                          const modal = document.getElementById('subscription-modal');
+                          if (modal) {
+                              modal.classList.add('translate-y-full');
+
+                              // Optional: Store in localStorage to prevent showing again in this session
+                              localStorage.setItem('subscriptionModalClosed', 'true');
+                          }
+                      });
+                  }
+
+                  // Optional: Check if we should show the modal (if it hasn't been closed previously)
+                  // Uncomment this to enable the check
+                  /*
+                  const hasModalBeenClosed = localStorage.getItem('subscriptionModalClosed') === 'true';
+                  if (hasModalBeenClosed) {
+                    const modal = document.getElementById('subscription-modal');
+                    if (modal) {
+                      modal.style.display = 'none';
+                    }
+                  }
+                  */
+              });
+          </script>
+
+          <script src="https://unpkg.com/lottie-web@5.12.0/build/player/lottie.min.js"></script>
+
+          <script>
+              document.addEventListener("DOMContentLoaded", function() {
+                  const animations = [{
+                          id: 'lottie-1',
+                          path: '/lottie/design-animation.json'
+                      },
+                      {
+                          id: 'lottie-2',
+                          path: '/lottie/crown-animation.json'
+                      },
+                      {
+                          id: 'lottie-3',
+                          path: '/lottie/creator-animation.json'
+                      },
+                  ];
+
+                  animations.forEach(anim => {
+                      lottie.loadAnimation({
+                          container: document.getElementById(anim.id),
+                          renderer: 'svg',
+                          loop: true,
+                          autoplay: true,
+                          path: anim.path
+                      });
+                  });
+              });
+          </script>
       </div>
   @endsection

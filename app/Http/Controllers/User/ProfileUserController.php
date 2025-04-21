@@ -31,7 +31,7 @@ class ProfileUserController extends Controller
     public function show()
     {
         $user = Auth::user(); // user yang login
-        $assets = $user->asset()->latest()->paginate(9); // ambil asset yang dia upload
+        $assets = $user->asset()->latest()->paginate(9)->where('status', 'active'); // ambil asset yang dia upload
 
         return view('user.profile', compact('user', 'assets'));
     }

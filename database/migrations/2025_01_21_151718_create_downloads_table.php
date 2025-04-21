@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('asset_id');
-            $table->dateTime('downloads');
             $table->timestamps();
+
+            $table->unique(['user_id','asset_id']);
 
             //foreign wak
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

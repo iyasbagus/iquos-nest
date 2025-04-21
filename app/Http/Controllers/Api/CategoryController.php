@@ -12,7 +12,21 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return response()->json(Category::all(), 200);
+        $category = Category::with(['media'])->get();
+
+        $data = $category->map(function ($categories) {
+            $media = $categories->getFirstMedia('category');
+            return [
+                'id' => $categories->id,
+                'name' => $categories->name,
+                'slug' => $categories->slug,
+                'img_name' => $media ? $media->file_name : null,
+                'description' => $categories->description,
+                'images' => $media ? $media->getUrl() : null, // <--- ini kuncinya
+            ];
+        });
+
+        return response()->json($data);
     }
 
     public function store(Request $request)

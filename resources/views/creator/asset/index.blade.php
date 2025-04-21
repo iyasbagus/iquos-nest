@@ -7,8 +7,6 @@
     </x-slot>
 
     @include('creator.asset.create')
-
-    <div class="px-1 mt-5">
             <section class="container px-4 mx-auto">
                 <div class="sm:flex sm:items-center sm:justify-between">
                     <div>

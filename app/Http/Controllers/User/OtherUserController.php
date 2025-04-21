@@ -11,6 +11,7 @@ class OtherUserController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $admin = User::role('admin')->get();
         $creators = User::role('creator')->get();
 
         // Tambahkan properti assets_terbaru ke setiap creator
@@ -20,11 +21,12 @@ class OtherUserController extends Controller
                 ->with('media') // kalau pakai Spatie Media Library
                 ->latest()
                 ->take(3)
+                ->where('status', 'active')
                 ->get();
             return $creator;
         });
 
-        return view('user.list-creator', compact('user', 'creators'));
+        return view('user.list-creator', compact('user', 'admin' ,'creators'));
     }
 
     public function showOtherProfile($username)
@@ -33,7 +35,7 @@ class OtherUserController extends Controller
         $creator = \App\Models\User::where('username', $username)->firstOrFail();
 
         // Misalnya ambil juga aset yang diunggah oleh creator tersebut
-        $assets = $creator->asset()->latest()->get();
+        $assets = $creator->asset()->latest()->where('status', 'active')->get();
 
         return view('user.other-profile', compact('creator', 'assets', 'user'));
     }

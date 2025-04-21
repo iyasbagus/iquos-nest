@@ -13,6 +13,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
@@ -1232,6 +1233,111 @@
             <!-- Konten utama -->
             <div class="p-6">
                 @yield('content-explore')
+            </div>\
+
+            <!-- Modal -->
+            <div id="searchModal" class="fixed inset-0 backdrop-blur-md z-50 hidden">
+                <div
+                    class="max-w-5xl mx-auto mt-16 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl relative overflow-hidden border border-blue-100 dark:border-blue-900">
+                    <!-- Decorative elements for playful look -->
+
+                    <!-- Content container with max height and scroll -->
+                    <div class="relative z-10 max-h-[80vh] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Header & Close Button -->
+                        <div
+                            class="flex items-center justify-between mb-6 sticky top-0 bg-white dark:bg-gray-800 py-2 z-20">
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                                <span class="text-blue-500 mr-2"></span>Search Asset
+                            </h2>
+                            <button id="closeModal"
+                                class="text-3xl font-bold text-gray-500 hover:text-red-500 transition-colors duration-200 transform hover:scale-110">&times;</button>
+                        </div>
+
+                        <!-- Search Input with Icon -->
+                        <div class="relative mb-8">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <input type="text" id="searchField" placeholder="Search Assets Here..."
+                                class="w-full pl-12 pr-4 py-4 border-2 border-blue-100 dark:border-blue-900 rounded-xl focus:ring-4 focus:ring-blue-300 focus:border-blue-500 text-gray-800 dark:bg-gray-700 dark:text-white transition-all duration-300 shadow-sm hover:shadow-md" />
+                        </div>
+
+                        <!-- Recent Searches with Clear Option -->
+                        <div class="mb-8 bg-gray-50 dark:bg-gray-750 p-4 rounded-xl">
+                            <div class="flex justify-between items-center mb-3">
+                                <p class="font-bold text-gray-700 dark:text-gray-300 flex items-center">
+                                    <span class="text-gray-500 mr-2">🕒</span> Recent Searches
+                                </p>
+                                <button id="clearAllSearches"
+                                    class="text-sm text-blue-500 hover:text-blue-700 hover:underline transition-colors flex items-center">
+                                    <span>Delete all</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v10m4-10v10m5-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div id="recentSearches" class="flex flex-wrap gap-2 text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Category Section with Images - Fixed height with horizontal scroll -->
+                        <div class="mb-8">
+                            <h3 class="font-bold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
+                                <span class="text-yellow-500 mr-2"></span> Popular Categories
+                            </h3>
+                            <div class="overflow-x-auto pb-4 hide-scrollbar">
+                                <div class="flex gap-4" style="min-width: min-content">
+                                    <!-- Category 1 -->
+                                    @foreach ($category as $item)
+                                        <a href="#" class="group min-w-48">
+                                            <div
+                                                class="rounded-xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 hover:shadow-lg transition-all duration-300 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-700 transform hover:-translate-y-1">
+                                                <div
+                                                    class="h-44 w-52 flex items-center justify-center relative overflow-hidden">
+                                                    <div
+                                                        class="absolute inset-0 bg-blue-500/10 group-hover:bg-blue-500/0 transition-all">
+                                                    </div>
+                                                    @foreach ($item->getMedia('category') as $image)
+                                                        <img src="{{ $image->getUrl() }}" alt="UI Templates"
+                                                            class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500" />
+                                                    @endforeach
+                                                </div>
+                                                <div class="p-3 text-center">
+                                                    <h4
+                                                        class="font-bold text-gray-800 dark:text-white group-hover:text-blue-500 transition-colors">
+                                                        {{ $item->name }}</h4>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                        {{ $item->assets()->count() }} Assets</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Popular Tags -->
+                        <div>
+                            <h3 class="font-bold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
+                                <span class="text-purple-500 mr-2">#</span> Tag Populer
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($tags as $tag)
+                                    <a href="{{ route('user.explore.listAssetView', ['search' => $tag->name]) }}"
+                                        class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-800 dark:hover:to-purple-800 px-4 py-2 rounded-full text-sm text-gray-700 dark:text-gray-300 transition-colors duration-200 border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 shadow-sm hover:shadow transform hover:-translate-y-0.5">
+                                        {{ $tag->name }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             @include('user.components.footer-explore')
@@ -1242,10 +1348,137 @@
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 
     <script>
         AOS.init();
     </script>
+
+      <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const openBtn = document.getElementById('openSearchModal');
+                    const modal = document.getElementById('searchModal');
+                    const closeBtn = document.getElementById('closeModal');
+                    const searchInput = document.getElementById('searchField');
+                    const recentContainer = document.getElementById('recentSearches');
+                    const clearAllBtn = document.getElementById('clearAllSearches');
+
+                    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+
+                    const renderRecent = () => {
+                        recentContainer.innerHTML = '';
+
+                        if (recentSearches.length === 0) {
+                            recentContainer.innerHTML =
+                                '<p class="text-gray-500 dark:text-gray-400 italic text-sm">There are no recent searches yet</p>';
+                            return;
+                        }
+
+                        recentSearches.forEach((item, index) => {
+                            const searchItem = document.createElement('span');
+                            searchItem.className =
+                                'bg-white dark:bg-gray-700 px-3 py-1.5 rounded-full text-gray-700 dark:text-gray-300 flex items-center group shadow-sm hover:shadow-md transition-all';
+                            searchItem.innerHTML = `
+                    <span>${item}</span>
+                    <button data-index="${index}" class="ml-2 text-gray-400 hover:text-red-500 group-hover:opacity-100 opacity-50">&times;</button>
+                `;
+
+                            // Add click event for the search item text
+                            searchItem.querySelector('span').addEventListener('click', () => {
+                                searchInput.value = item;
+                                searchInput.focus();
+                            });
+
+                            // Add click event for the remove button
+                            searchItem.querySelector('button').addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                removeSearch(index);
+                            });
+
+                            recentContainer.appendChild(searchItem);
+                        });
+                    };
+
+                    function removeSearch(index) {
+                        recentSearches.splice(index, 1);
+                        localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+                        renderRecent();
+                    }
+
+                    // Clear all recent searches
+                    if (clearAllBtn) {
+                        clearAllBtn.addEventListener('click', () => {
+                            if (confirm('Hapus semua riwayat pencarian?')) {
+                                recentSearches = [];
+                                localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+                                renderRecent();
+                            }
+                        });
+                    }
+
+                    if (openBtn) {
+                        openBtn.addEventListener('click', () => {
+                            modal.classList.remove('hidden');
+                            renderRecent();
+                            setTimeout(() => searchInput.focus(), 200);
+                        });
+                    }
+
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', () => {
+                            modal.classList.add('hidden');
+                        });
+                    }
+
+                    // Close modal when clicking outside content
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.classList.add('hidden');
+                        }
+                    });
+
+                    // Search functionality
+                    searchInput.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            const keyword = searchInput.value.trim();
+                            if (keyword !== '') {
+                                if (!recentSearches.includes(keyword)) {
+                                    recentSearches.unshift(keyword);
+                                    if (recentSearches.length > 8) recentSearches.pop();
+                                    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+                                }
+
+                                window.location.href =
+                                    `{{ route('user.explore.listAssetView') }}?search=${encodeURIComponent(keyword)}`;
+                            }
+                        }
+                    });
+
+                    // Initial render
+                    renderRecent();
+
+                    // Add a little animation when modal opens
+                    if (modal && !modal.classList.contains('hidden')) {
+                        modal.querySelector('.max-w-5xl').classList.add('animate-fadeIn');
+                    }
+                });
+
+                // Define animation if not already in your CSS
+                if (!document.getElementById('modalAnimations')) {
+                    const styleSheet = document.createElement('style');
+                    styleSheet.id = 'modalAnimations';
+                    styleSheet.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fadeIn {
+                animation: fadeIn 0.3s ease-out forwards;
+            }
+        `;
+                    document.head.appendChild(styleSheet);
+                }
+            </script>
 </body>
 
 </html>

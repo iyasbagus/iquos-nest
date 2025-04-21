@@ -104,7 +104,7 @@
 
                                     <!-- Action Buttons -->
                                     <div class="mt-4 md:mt-0 flex flex-wrap justify-center md:justify-end gap-2">
-                                        <button
+                                        {{-- <button
                                             class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition shadow-md hover:shadow-lg flex items-center">
                                             <svg class="w-5 h-5 mr-2 text-white-800 dark:text-white" aria-hidden="true"
                                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -115,7 +115,7 @@
                                             </svg>
 
                                             Follow
-                                        </button>
+                                        </button> --}}
                                         <button
                                             class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition shadow hover:shadow-md flex items-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
@@ -143,7 +143,7 @@
                                     class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-4 shadow-sm transform transition duration-300 hover:-translate-y-1 hover:shadow-md border border-purple-100">
                                     <div class="flex items-center justify-between">
                                         <div>
-                                            <p class="text-2xl font-bold text-purple-600">{{ $creator->asset->count() }}
+                                            <p class="text-2xl font-bold text-purple-600">{{ $creator->asset()->where('status', 'active')->count() }}
                                             </p>
                                             <p class="text-sm text-gray-500">Assets</p>
                                         </div>
@@ -158,7 +158,7 @@
                                 </div>
 
                                 <!-- Following Count -->
-                                <div
+                                {{-- <div
                                     class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-4 shadow-sm transform transition duration-300 hover:-translate-y-1 hover:shadow-md border border-pink-100">
                                     <div class="flex items-center justify-between">
                                         <div>
@@ -173,14 +173,14 @@
                                             </svg>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <!-- Downloads Count -->
                                 <div
                                     class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 shadow-sm transform transition duration-300 hover:-translate-y-1 hover:shadow-md border border-blue-100">
                                     <div class="flex items-center justify-between">
                                         <div>
-                                            <p class="text-2xl font-bold text-blue-600">4.2k</p>
+                                            <p class="text-2xl font-bold text-blue-600">{{$creator->totalDownloads()}}</p>
                                             <p class="text-sm text-gray-500">Downloads</p>
                                         </div>
                                         <div class="p-2 bg-blue-100 rounded-lg">
@@ -245,7 +245,7 @@
                                                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                                                         </svg>
                                                         <span
-                                                            class="text-sm text-purple-100 ml-1">{{ $asset->downloads ?? 0 }}
+                                                            class="text-sm text-purple-100 ml-1">{{ $asset->downloads()->count() }}
                                                             Downloads</span>
                                                     </div>
                                                 </div>
@@ -274,7 +274,7 @@
                                                             stroke-width="2"
                                                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                                                     </svg>
-                                                    {{ $asset->downloads ?? 0 }}
+                                                    {{ $asset->downloads()->count() }}
                                                 </div>
                                             </div>
                                         </div>

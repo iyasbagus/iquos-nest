@@ -26,7 +26,7 @@ class Category extends Model implements HasMedia
     // relasi many to many ke asset
     public function assets()
     {
-        return $this->belongsToMany(Asset::class, 'asset_categories', 'asset_id' ,'category_id');
+        return $this->belongsToMany(Asset::class, 'asset_categories', 'category_id' ,'asset_id');
     }
 
     public function deleteImage(){

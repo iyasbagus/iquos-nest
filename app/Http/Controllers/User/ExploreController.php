@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 
 use App\Models\Category;
 use App\Models\Asset;
+use App\Models\Download;
 use App\Models\Tag;
 use App\Models\User;
+
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -20,14 +22,44 @@ class ExploreController extends Controller
 {
     use AuthorizesRequests;
 
-    public function listAssetView()
+    public function listAssetView(Request $request)
     {
-        $user = Auth::user();
-        $category = Category::all();
-        $asset = Asset::with('tags', 'media', 'creator')->where('status', 'active')->get();
-        $tags = Tag::all();
+        $query = Asset::query()->with('tags', 'media', 'creator')->where('status', 'active');
 
-        return view('user.explore', compact('category', 'asset', 'tags', 'user'));
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%$search%")->orWhereHas('tags', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%");
+                });
+            });
+        }
+
+        $asset = $query->latest()->paginate(12);
+        $tags = Tag::all();
+        $category = Category::all();
+        $user = Auth::user();
+
+        return view('user.explore', compact('asset', 'tags', 'category', 'user'));
+    }
+
+    public function exploreAssets(Request $request)
+    {
+        $query = Asset::query()->with('tags', 'media', 'creator')->where('status', 'active');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%$search%")->orWhereHas('tags', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%");
+                });
+            });
+        }
+
+        $asset = $query->latest()->paginate(12);
+        $tags = Tag::all();
+        $category = Category::all();
+        $user = Auth::user();
+
+        return view('user.explored', compact('asset', 'tags', 'category', 'user'));
     }
 
     public function downloadImageById(Request $request)
@@ -74,39 +106,100 @@ class ExploreController extends Controller
     public function downloadAssetFileById(Request $request)
     {
         $user = Auth::user();
-        \Log::info('User ID:', ['id' => $user->id]);
         $modelId = $request->query('modelId');
         $collectionName = $request->query('collection');
 
         $asset = Asset::findOrFail($modelId);
-
-        // Premium user? Langsung boleh
-        if ($user->isPremium()) {
-            return $this->downloadMedia($asset, $collectionName);
-        }
-
-        // Kalau asset-nya premium → blok user free
-        if ($asset->is_premium_only) {
-            return back()->with('error', 'Hanya user premium yang bisa mendownload asset ini.');
-        }
-
-        // Cek record harian
         $today = now()->toDateString();
-        $record = \App\Models\DailyDownload::firstOrCreate(['user_id' => $user->id, 'date' => $today], ['free_asset_ids' => json_encode([])]);
+
+        // Cek apakah user premium
+        $isPremium = $user->isPremium();
+
+        // Ambil atau buat record download harian
+        $record = \App\Models\DailyDownload::firstOrCreate(
+            ['user_id' => $user->id, 'date' => $today],
+            [
+                'free_asset_ids' => json_encode([]),
+                'premium_asset_ids' => json_encode([]),
+            ],
+        );
 
         $freeAssets = collect(json_decode($record->free_asset_ids, true));
+        $premiumAssets = collect(json_decode($record->premium_asset_ids, true));
 
-        // Sudah download asset ini?
-        if (!$freeAssets->contains($asset->id)) {
-            if ($freeAssets->count() >= 10) {
-                return back()->with('error', 'Kamu sudah mencapai batas download 10 asset hari ini.');
+        if ($asset->is_premium_only) {
+            // === PREMIUM ASSET ===
+
+            if (!$isPremium) {
+                return back()->with('error', 'Only premium users can download this asset.');
             }
 
-            // Tambahkan asset ke list
-            $freeAssets->push($asset->id);
-            $record->update([
-                'free_asset_ids' => $freeAssets->unique()->values()->toJson(),
-            ]);
+            // Cek batas download premium harian
+            $plan = $user->latestActivePremium();
+            $maxPremiumDownloads = $plan?->max_downloads ?? 0;
+
+            if ($asset->is_premium_only) {
+                if (!$isPremium) {
+                    return back()->with('error', 'Only premium users can download this asset.');
+                }
+
+                $premiumPayment = $user->latestActivePremium()->first();
+                $plan = $premiumPayment?->plan;
+                $maxPremiumDownloads = $plan?->max_downloads ?? 0;
+
+                if (!$premiumAssets->contains($asset->id)) {
+                    if ($premiumAssets->count() >= $maxPremiumDownloads) {
+                        return back()->with('error', 'Kamu sudah mencapai batas download asset premium hari ini.');
+                    }
+
+                    $premiumAssets->push($asset->id);
+                    $record->update([
+                        'premium_asset_ids' => $premiumAssets->unique()->values()->toJson(),
+                    ]);
+                }
+            }
+        } else {
+            // === FREE ASSET ===
+
+            $maxFreeDownloads = $isPremium ? 100 : 10;
+
+            if (!$freeAssets->contains($asset->id)) {
+                if ($freeAssets->count() >= $maxFreeDownloads) {
+                    return back()->with('error', 'Kamu sudah mencapai batas download asset gratis hari ini.');
+                }
+
+                $freeAssets->push($asset->id);
+                $record->update([
+                    'free_asset_ids' => $freeAssets->unique()->values()->toJson(),
+                ]);
+            }
+        }
+
+        // Simpan download ke tabel download unik
+        $download = \App\Models\Download::firstOrCreate([
+            'user_id' => $user->id,
+            'asset_id' => $asset->id,
+        ]);
+
+        // === KOMISI CREATOR ===
+        if ($asset->is_premium_only && $user->isPremium() && $download->wasRecentlyCreated) {
+            $plan = $user->latestActivePremium()->first(); // relasi: PremiumPayment
+            $revenuePercentage = $plan?->plan?->revenue_share_percentage ?? 0;
+            $payment = $plan;
+
+            if ($payment && $revenuePercentage) {
+                // Total komisi per download unik
+                $maxDownloads = $plan->plan->max_downloads ?: 1;
+                $komisiPerDownload = ($payment->amount * ($revenuePercentage / 100)) / $maxDownloads;
+
+                \App\Models\CreatorEarning::create([
+                    'creator_id' => $asset->creator_id,
+                    'asset_id' => $asset->id,
+                    'downloaded_by' => $user->id,
+                    'amount' => $komisiPerDownload,
+                    'premium_payment_id' => $payment->id,
+                ]);
+            }
         }
 
         return $this->downloadMedia($asset, $collectionName);

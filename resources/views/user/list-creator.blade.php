@@ -7,9 +7,9 @@
         <div class="relative rounded-xl overflow-hidden mb-10 bg-gray-900">
             <div class="absolute inset-0 bg-gradient-to-r from-gray-900 to-transparent z-10"></div>
             <div class="relative z-20 p-12 md:p-16 flex flex-col items-center text-center text-white">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Looking to Hire a Creator?</h1>
-                <p class="text-lg md:text-xl max-w-2xl">Over 1 million creatives are available for freelance or full-time</p>
-                <div class="relative flex-1 mt-4 w-96">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Looking for a Creator?</h1>
+                <p class="text-lg md:text-xl max-w-2xl">More than 1 million active creative designers with various designs</p>
+                <div class="relative flex-1 mt-6 w-96">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
@@ -22,13 +22,15 @@
                         placeholder="Search the creative world at work">
                 </div>
             </div>
-            <div class="absolute bottom-4 right-4 z-20 flex items-center">
-                <img src="/api/placeholder/40/40" alt="Profile" class="w-10 h-10 rounded-full border-2 border-white">
-                <div class="ml-2 text-white">
-                    <p class="font-semibold text-sm">Cláudia Silva</p>
-                    <p class="text-xs">Aveiro, Portugal</p>
+            @foreach ($admin as $atmin)
+                <div class="absolute bottom-4 right-4 z-20 flex items-center">
+                    <img src="{{ $atmin->getFirstMediaUrl('profile_picture') ?: \App\Helpers\AvatarHelper::generateAvatar($atmin->name) }}" alt="Profile" class="w-10 h-10 rounded-full border-2 border-white">
+                    <div class="ml-2 text-white">
+                        <p class="font-semibold text-sm">{{ $atmin->name }}</p>
+                        <p class="text-xs">Bandung, Indonesia</p>
+                    </div>
                 </div>
-            </div>
+            @endforeach
         </div>
 
         <!-- Creators Grid -->
@@ -43,15 +45,13 @@
                                     <img src="{{ $asset->getFirstMediaUrl('images') }}" alt="Work sample"
                                         class="w-full object-cover">
                                 @else
-                                    <img src="/api/placeholder/150/125" alt="Work sample"
-                                        class=" object-cover">
+                                    <img src="/api/placeholder/150/125" alt="Work sample" class=" object-cover">
                                 @endif
                             </div>
                         @empty
                             @for ($i = 0; $i < 3; $i++)
                                 <div class=" bg-gray-100">
-                                    <img src="/api/placeholder/150/125" alt="Work sample"
-                                        class="object-cover">
+                                    <img src="/api/placeholder/150/125" alt="Work sample" class="object-cover">
                                 </div>
                             @endfor
                         @endforelse
@@ -113,7 +113,7 @@
                         </div>
 
                         <!-- Message Button -->
-                        <a href="#"
+                        <a href="{{route('otherUser.profile', $creator->username)}}"
                             class="mt-4 w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-lg transition">
                             Show Profile {{ explode(' ', $creator->name)[0] }}
                         </a>

@@ -15,8 +15,8 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $category = Category::all();
-    
+        $category = Category::with('assets')->get();
+
         $categoryTotal = Category::count();
 
         return view('admin.category.index', compact('category', 'categoryTotal'));
@@ -107,13 +107,8 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
-        if (!$category) {
-            return redirect()->back()->with('error', 'Category Not Found');
-        }
-
-        $file_path = public_path('admin/images/category/' . $category->images);
-        if (File::exists($file_path)) {
-            File::delete($file_path);
+        if ($category->assets()->count() > 0){
+            return redirect()->back()->with('error', 'The category cannot be deleted because it still has assets.');
         }
 
         $category->delete();

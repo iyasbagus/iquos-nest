@@ -1,17 +1,20 @@
-<header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 dark:bg-gray-900">
     <div class="container mx-auto px-4 md:px-14 py-4">
         <div class="flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <span class="text-xl font-bold gradient-text">IQUOS Nest</span>
+                <a href="{{ route('welcome') }}">
+                    <span class="text-xl font-bold gradient-text">IQUOS Nest</span>
+                </a>
             </div>
 
             <nav class="hidden md:flex items-center space-x-8 lg:space-x-14">
                 <a href="{{ route('user.explore.listAssetView') }}"
-                    class="text-gray-900 hover:text-indigo-600 font-medium transition-colors">Explore</a>
-                <a href="#" class="text-gray-900 hover:text-indigo-600 font-medium transition-colors">Creator</a>
-                <a href="#" class="text-gray-900 hover:text-indigo-600 font-medium transition-colors">About</a>
+                    class="hover:text-indigo-600 font-medium transition-colors">Explore</a>
+                <a href="{{ route('creator-list.profile') }}"
+                    class="hover:text-indigo-600 font-medium transition-colors">Creator</a>
+                <a href="#" class="hover:text-indigo-600 font-medium transition-colors">About</a>
                 <a href="{{ route('subscription.premium') }}"
-                    class="text-gray-900 hover:text-indigo-600 font-medium transition-colors">Subscription</a>
+                    class="hover:text-indigo-600 font-medium transition-colors">Subscription</a>
             </nav>
 
             @if (Route::has('login'))
@@ -21,7 +24,7 @@
 
                         @if (auth()->user()->hasRole('admin'))
                             <div class="hidden md:block md:absolute md:right-52">
-                                <a class="group relative inline-flex items-center overflow-hidden rounded-sm border border-current px-8 py-3 text-indigo-600 focus:ring-3 focus:outline-hidden"
+                                <a class="group relative inline-flex items-center overflow-hidden rounded-sm border border-current px-8 py-3 text-indigo-600 focus:ring-3 focus:outline-hidden dark:text-indigo-400"
                                     href="{{ route('dashboard') }}">
                                     <span class="absolute -end-full transition-all group-hover:end-4">
                                         <svg class="size-5 shadow-sm rtl:rotate-180" xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +52,6 @@
                                     <span class="text-sm font-medium transition-all group-hover:me-4"> Dashboard </span>
                                 </a>
                             </div>
-
                         @else
                             <div class="hidden md:block md:absolute md:right-52">
                                 <a class="group relative inline-flex items-center overflow-hidden rounded-sm border border-current px-8 py-3 text-indigo-600 focus:ring-3 focus:outline-hidden"
@@ -69,7 +71,7 @@
 
                         {{-- Notifikasi --}}
                         <div class="relative group">
-                            <a href="{{ route('notifications.index') }}">
+                            <a href="#">
                                 <button class="relative hover:text-indigo-600 transition-colors">
                                     <span class="material-icons-outlined">notifications</span>
                                     @php
@@ -86,8 +88,8 @@
 
                             {{-- Dropdown tampil saat hover --}}
                             <div
-                                class="hidden group-hover:block absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-md z-50">
-                                <div class="p-3 font-bold border-b">Notifikasi</div>
+                                class="hidden group-hover:block absolute right-0 w-80 bg-white shadow-lg rounded-md z-50 dark:bg-gray-800">
+                                <div class="p-3 font-bold border-b dark:border-gray-500">Notifikasi</div>
                                 <div class="max-h-60 overflow-y-auto">
                                     @forelse(auth()->user()->notifications as $notification)
                                         <div class="px-4 py-3 border-b hover:bg-gray-100">
@@ -98,7 +100,8 @@
                                             </div>
                                         </div>
                                     @empty
-                                        <div class="p-4 text-sm text-gray-500">Tidak ada notifikasi.</div>
+                                        <div class="p-4 text-sm text-gray-500 dark:text-gray-300">Tidak ada notifikasi.
+                                        </div>
                                     @endforelse
                                 </div>
                             </div>
@@ -112,35 +115,74 @@
 
                             <x-slot name="content">
                                 <x-dropdown-link href="{{ route('profileUser.show') }}">
-                                    <div class="flex items-center py-1 text-gray-600 transition hover:bg-gray-100">
+                                    <div class="flex items-center py-1 text-gray-600 transition">
                                         {{-- <i class="material-icons-outlined">account_circle</i> --}}
-                                        <span class="text-sm font-medium">Profile</span>
+                                        <span class="text-sm font-medium dark:text-white">Profile</span>
                                     </div>
                                 </x-dropdown-link>
 
                                 <x-dropdown-link href="{{ route('subscription.history') }}">
-                                    <div class="flex items-center py-1 text-gray-600 transition hover:bg-gray-100">
+                                    <div class="flex items-center py-1 text-gray-600 transition">
                                         {{-- <i class="material-icons-outlined">history</i> --}}
-                                        <span class="text-sm font-medium">Subscription History</span>
+                                        <span class="text-sm font-medium dark:text-white">Subscription History</span>
                                     </div>
                                 </x-dropdown-link>
 
                                 <x-dropdown-link href="#">
-                                    <div class="flex items-center py-1 text-gray-600 transition hover:bg-gray-100">
+                                    <div class="flex items-center py-1 text-gray-600 transition">
                                         {{-- <i class="material-icons-outlined">history</i> --}}
-                                        <span class="text-sm font-medium">Setting</span>
+                                        <span class="text-sm font-medium dark:text-white">Setting</span>
                                     </div>
                                 </x-dropdown-link>
 
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left">
-                                        <div class="flex items-center py-2 text-red-600 transition hover:bg-gray-100">
-                                            {{-- <i class="material-icons-outlined ml-5">logout</i> --}}
-                                            <span class="ml-4 text-sm font-medium">Logout</span>
-                                        </div>
-                                    </button>
-                                </form>
+                                <div x-data="{ darkMode: JSON.parse(localStorage.getItem('darkMode') || 'false') }" x-init="document.documentElement.classList.toggle('dark', darkMode)"
+                                    class="flex items-center pl-4 py-1 text-gray-600" @click.stop>
+                                    <span class="text-sm font-medium mr-3 dark:text-white">Dark Mode</span>
+
+                                    <label
+                                        class="relative block h-8 w-14 rounded-full bg-gray-300 transition-colors cursor-pointer"
+                                        :class="darkMode ? 'bg-blue-500' : 'bg-gray-300'" @click.stop>
+                                        <input type="checkbox" class="sr-only peer" x-model="darkMode"
+                                            @change.stop="
+                localStorage.setItem('darkMode', darkMode);
+                document.documentElement.classList.toggle('dark', darkMode);
+               ">
+                                        <span
+                                            class="absolute inset-y-0 left-0 m-1 h-6 w-6 rounded-full bg-white transition-all"
+                                            :class="{ 'translate-x-6': darkMode }"></span>
+                                    </label>
+                                </div>
+
+                                <x-dropdown-link href="#">
+                                    <div class="flex items-center py-1 text-gray-600 transition">
+                                        <span class="text-sm font-medium dark:text-white">
+                                            Free Dowload Today: {{ $remainingFreeDownloads ?? '-' }}
+                                        </span>
+                                    </div>
+                                    </x-dropdown-link>
+
+                                    @auth
+                                        @if (auth()->user()->isPremium())
+                                            <x-dropdown-link href="#">
+                                                <div class="flex items-center py-1 text-gray-600 transition">
+                                                    <span class="text-sm font-medium dark:text-white">
+                                                        Pro Download Today: {{ $remainingPremiumDownloads ?? '-' }}
+                                                    </span>
+                                                </div>
+                                            </x-dropdown-link>
+                                        @endif
+                                    @endauth
+
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left">
+                                            <div
+                                                class="flex items-center py-2 text-red-600 transition hover:bg-gray-100 dark:hover:bg-gray-900">
+                                                {{-- <i class="material-icons-outlined ml-5">logout</i> --}}
+                                                <span class="ml-4 text-sm font-medium">Logout</span>
+                                            </div>
+                                        </button>
+                                    </form>
 
                             </x-slot>
                         </x-dropdown>
@@ -155,7 +197,8 @@
                     @endauth
                 </div>
 
-                <button id="mobile-menu-button" class="md:hidden text-gray-800 hover:text-indigo-600 transition-colors">
+                <button id="mobile-menu-button"
+                    class="md:hidden text-gray-800 hover:text-indigo-600 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -202,7 +245,7 @@
         const mobileMenu = document.getElementById('mobile-menu');
 
         // Set initial state
-        navbar.classList.add('backdrop-filter', 'backdrop-blur-lg', 'bg-opacity-30', 'bg-white', 'border-b');
+        navbar.classList.add('backdrop-filter', 'backdrop-blur-lg', 'bg-opacity-30', 'bg-white');
 
         // Handle scroll events
         window.addEventListener('scroll', function() {

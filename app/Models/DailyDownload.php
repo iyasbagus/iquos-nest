@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DailyDownload extends Model
 {
     protected $fillable = [
-        'user_id', 'date', 'free_asset_ids',
+        'user_id', 'date', 'free_asset_ids', 'premium_asset_ids'
     ];
 
     public function user()

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->date('date');
             $table->json('free_asset_ids')->nullable();
+            $table->json('premium_asset_ids')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'date']); // Supaya 1 record per hari

@@ -129,16 +129,16 @@
                                                 <td class="px-4 py-4 text-sm whitespace-nowrap">
                                                     <div class="flex items-center">
                                                         <button
-                                                            class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 mr-4 text-xs font-medium text-indigo-600 ring-1 ring-indigo-500/10 ring-inset">Edit</button>
+                                                            class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 mr-4 text-xs font-medium text-indigo-600 ring-1 ring-indigo-500/10 ring-inset cursor-not-allowed opacity-50" disabled>Edit</button>
                                                         <button
-                                                            class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 mr-4 text-xs font-medium text-yellow-600 ring-1 ring-yellow-500/10 ring-inset">Show</button>
+                                                            class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 mr-4 text-xs font-medium text-yellow-600 ring-1 ring-yellow-500/10 ring-inset cursor-not-allowed opacity-50" disabled>Show</button>
                                                         <form action="#"
                                                             method="POST">
                                                             @method('DELETE')
                                                             @csrf
                                                             <button
                                                                 class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs
-                                                        font-medium text-red-600 ring-1 ring-red-500/10 ring-inset"
+                                                        font-medium text-red-600 ring-1 ring-red-500/10 ring-inset cursor-not-allowed opacity-50" disabled
                                                                 type="submit"
                                                                 onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">Delete</button>
                                                         </form>

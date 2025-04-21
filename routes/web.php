@@ -51,6 +51,7 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 Route::middleware('auth')->group(function () {
     // Route untuk explore asset
     Route::get('/explore-asset',[ExploreController::class, 'listAssetView'])->name('user.explore.listAssetView');
+    Route::get('/explore-asset/explore',[ExploreController::class, 'exploreAssets'])->name('user.explore.assets');
 
     // Route download gambar dan file asset
     Route::get('/download-image',[ExploreController::class, 'downloadImageById'])->name('download.image');
@@ -130,8 +131,34 @@ Route::middleware(['role:admin'])->group(function () {
         ->name('admin.asset.rejected');
 });
 
-Route::get('/img/{filename}', function ($filename) {
-    $path = storage_path('app/public/images/' . $filename);
+Route::get('/img/assets/{filename}', function ($filename) {
+    $path = storage_path('app/public/assets/images/' . $filename);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->make(file_get_contents($path), 200, [
+        'Content-Type' => mime_content_type($path),
+        'Access-Control-Allow-Origin' => '*',
+    ]);
+});
+
+Route::get('/img/category/{imgname}', function ($imgname) {
+    $path = storage_path('app/public/category/images/' . $imgname);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->make(file_get_contents($path), 200, [
+        'Content-Type' => mime_content_type($path),
+        'Access-Control-Allow-Origin' => '*',
+    ]);
+});
+
+Route::get('/img/profile/{imgname}', function ($profilename) {
+    $path = storage_path('app/public/assets/images/' . $profilename);
 
     if (!file_exists($path)) {
         abort(404);

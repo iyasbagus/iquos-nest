@@ -35,7 +35,7 @@ class AssetController extends Controller
             'title' => 'required',
             'description' => 'required',
             'image' => 'required|image|mimes:jpg,jpeg,png,gif',
-            'file' => 'required|file|mimes:zip,rar,psd,ai,pdf,doc,docx,xlsx,txt|max:102400',
+            'file' => 'required|file|mimes:zip,rar,psd,ai,pdf,doc,docx,xlsx,txt',
             'category_ids' => 'required|array|min:1',
             'tag_ids' => 'required|array|min:1',
         ]);

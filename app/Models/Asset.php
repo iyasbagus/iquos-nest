@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\Download;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,7 +31,7 @@ class Asset extends Model implements HasMedia
 
         $this->addMediaCollection('images')->useDisk('public');
     }
-    
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('large')->width(1000)->height(1000)->sharpen(10)->nonQueued(); // Tambahkan ini jika ingin langsung dibuat saat upload
@@ -58,5 +59,10 @@ class Asset extends Model implements HasMedia
     public function creator()
     {
         return $this->BelongsTo(User::class, 'creator_id');
+    }
+
+    public function downloads()
+    {
+        return $this->hasMany(Download::class);
     }
 }
